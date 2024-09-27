@@ -5,59 +5,58 @@
 
 MainWindow::MainWindow(QWidget* _parent) : QMainWindow(_parent) {
     m_pWindow = std::make_shared<QWidget>();
-    gridGroupBox = std::make_shared<QGridLayout>(m_pWindow.get());
-    textOutput = std::make_shared<QTextEdit>(m_pWindow.get());
-    stackedWidget = std::make_shared<QStackedWidget>();
+    m_pGridLayout = std::make_shared<QGridLayout>(m_pWindow.get());
+    m_pDirectoryBox = std::make_shared<QComboBox>(m_pWindow.get());
+    m_pFileBox = std::make_shared<QComboBox>(m_pWindow.get());
+    m_pExitButton = std::make_shared<QPushButton>(m_pWindow.get());
+    m_pConfigValues = std::make_shared<ConfigWidget>(m_pWindow.get());
     createUI();
     connectUI();
 }
 
+// Clean up
+MainWindow::~MainWindow() {
+    m_pWindow.reset();
+    m_pGridLayout.reset();
+    m_pDirectoryBox.reset();
+    m_pFileBox.reset();
+    m_pExitButton.reset();
+    m_pConfigValues.reset();
+}
+
 // Create objects for GUI
 void MainWindow::createUI(void) {
+    // TODO: move when switching to qss
     m_pWindow->setStyleSheet
         (
                 "background-color: #292c3c;"
                 "font: 12pt Arial;"
         );
-    gridGroupBox->setParent(m_pWindow.get());
-    gridGroupBox->setColumnMinimumWidth(1, 500);
-
-    // Left side
-    std::vector<std::string> buttonNames = {"Output", "Start", "Stop", "Exit"};
-    for (int i = 0; i < 4; ++i) {
-        undefinedButtons[i].setParent(m_pWindow.get());
-        undefinedButtons[i].setText(buttonNames[i].c_str());
-        undefinedButtons[i].setFixedSize(120, 40);
-        gridGroupBox->addWidget(&undefinedButtons[i], i, 0, -1, 1);
-    }
-
-    // Right side
-    // Create stacked widget
-    setCentralWidget(stackedWidget.get());
-
-    // Create individual widgets 
-    textOutput->setText("");
-    //textOutput->setStyleSheet();
-    textOutput->setAlignment(Qt::AlignLeft);
+    m_pGridLayout->setParent(m_pWindow.get());
+    m_pGridLayout->setColumnMinimumWidth(1, 500);
+    m_pDirectoryBox->insertItem(0, "Select Directory");
+    m_pFileBox->insertItem(0, "No Directory Selected");
+    m_pExitButton->setText("Exit");
 
     // Add individual widgets to stacked widget 
-    stackedWidget->addWidget(textOutput.get());
-    stackedWidget->setCurrentIndex(0);
-    gridGroupBox->addWidget(stackedWidget.get(), 0, 1, 4, 3);
-    gridGroupBox->setVerticalSpacing(0);
+    m_pGridLayout->addWidget(m_pDirectoryBox.get(), 0, 0, 1, 2);
+    m_pGridLayout->addWidget(m_pFileBox.get(), 0, 2, 1, 2);
+    m_pGridLayout->addWidget(m_pExitButton.get(), 0, 5);
+    m_pGridLayout->addWidget(m_pConfigValues->m_pConfigList.get(), 1, 0, -1, -1);
 
-    m_pWindow->setFixedSize(800, 600);
+    m_pWindow->setFixedSize(1280, 1024);
     m_pWindow->show();
 }
 
 // Connect buttons to implementations
 void MainWindow::connectUI(void) {
-    QObject::connect(&undefinedButtons[0], &QAbstractButton::clicked, this, &MainWindow::OutputButtonClicked);
-    QObject::connect(&undefinedButtons[1], &QAbstractButton::clicked, this, &MainWindow::StartButtonClicked);
-    QObject::connect(&undefinedButtons[2], &QAbstractButton::clicked, this, &MainWindow::StopButtonClicked);
-    QObject::connect(&undefinedButtons[3], &QAbstractButton::clicked, this, &MainWindow::ExitButtonClicked);
+    QObject::connect(m_pExitButton.get(), &QAbstractButton::clicked, this, &MainWindow::exitButtonClicked);
+    // TODO: refresh directory list on click
+    //QObject::connect(m_pDirectoryBox.get(), &QAbstractButton::clicked, this, &MainWindow::directoryButtonClicked);
 }
 
+// Read qss file in for styling
+// TODO: add feature in
 void MainWindow::readQss(void) {
     //QFile styleFile(":/qss/main_window.qss");
     //styleFile.open(QFile::ReadOnly);
@@ -65,47 +64,16 @@ void MainWindow::readQss(void) {
     //styleFile.close();
 }
 
-void MainWindow::testSignal(void) {
-}
-
-void MainWindow::OutputSignal(void) {
-    stackedWidget->setCurrentIndex(0);
-}
-
-void MainWindow::VisualSignal(void) {
-    stackedWidget->setCurrentIndex(1);
-}
-
-void MainWindow::StartSignal(void) {
-}
-
-void MainWindow::StopSignal(void) {
-}
-
-void MainWindow::ExitSignal(void) {
+// Exit the program
+void MainWindow::exitSignal(void) {
     exit(0);
 }
 
-void MainWindow::onTestButtonClicked(void) {
-    emit testSignal(); // Emit a signal when the button is clicked
+// Directory should be polled here and updated with information for menu
+void MainWindow::directoryButtonClicked(void) {
+    //emit directorySignal();
 }
 
-void MainWindow::VisualButtonClicked(void) {
-    emit VisualSignal();
-}
-
-void MainWindow::OutputButtonClicked(void) {
-    emit OutputSignal();
-}
-
-void MainWindow::StartButtonClicked(void) {
-    emit StartSignal();
-}
-
-void MainWindow::StopButtonClicked(void) {
-    emit StopSignal();
-}
-
-void MainWindow::ExitButtonClicked(void) {
-    emit ExitSignal();
+void MainWindow::exitButtonClicked(void) {
+    emit exitSignal();
 }

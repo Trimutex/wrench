@@ -2,51 +2,41 @@
 #define MAINWINDOW_HPP
 
 #include <memory>
+#include <QComboBox>
+#include <QGridLayout>
 #include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
-#include <QStackedWidget>
-#include <QTextEdit>
-#include <QVBoxLayout>
+#include "config.hpp"
 
 class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
 
 signals:
-    void testSignal(void);
-    void OutputSignal(void);
-    void VisualSignal(void);
-    void StartSignal(void);
-    void StopSignal(void);
-    void ExitSignal(void);
+    void exitSignal(void);
 public slots:
-    void onTestButtonClicked(void);
-    void VisualButtonClicked(void);
-    void OutputButtonClicked(void);
-    void StartButtonClicked(void);
-    void StopButtonClicked(void);
-    void ExitButtonClicked(void);
+    void directoryButtonClicked(void);
+    void exitButtonClicked(void);
 private:
     void createUI(void);
     void connectUI(void);
     void readQss(void);
 
-    bool m_bIsSetup = false;
-
     // Window itself
-    std::shared_ptr<QWidget> m_pWindow;
+    std::shared_ptr<QWidget>        m_pWindow;
 
     // Grid box for widgets
-    std::shared_ptr<QGridLayout> gridGroupBox;
+    std::shared_ptr<QGridLayout>    m_pGridLayout;
 
-    // Left side buttons
-    std::array<QPushButton, 4> undefinedButtons;
+    // Top buttons for choosing file
+    std::shared_ptr<QComboBox>      m_pDirectoryBox;
+    std::shared_ptr<QComboBox>      m_pFileBox;
+    std::shared_ptr<QPushButton>    m_pExitButton;
     
-    // Right side of window
-    std::shared_ptr<QTextEdit>      textOutput;
-    std::shared_ptr<QStackedWidget> stackedWidget;
-    std::shared_ptr<QLabel>         visualOutput;
+    // Config section of window
+    std::shared_ptr<ConfigWidget>   m_pConfigValues;
 };
 
 #endif
