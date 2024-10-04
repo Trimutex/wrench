@@ -17,12 +17,12 @@ public:
 signals:
     void exitSignal(void);
 public slots:
-    void directoryButtonClicked(void);
     void exitButtonClicked(void);
 private:
     void createUI(void);
     void connectUI(void);
     void readQss(void);
+    void populateDirectory(void);
 
     // Window itself
     std::shared_ptr<QWidget>        m_pWindow;

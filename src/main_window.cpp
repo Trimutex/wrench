@@ -1,4 +1,6 @@
 #include "main_window.hpp"
+#include <filesystem>
+#include <iostream>
 #include <QFile>
 #include <QPainter>
 #include <QPushButton>
@@ -12,6 +14,7 @@ MainWindow::MainWindow(QWidget* _parent) : QMainWindow(_parent) {
     m_pConfigValues = std::make_shared<ConfigWidget>(m_pWindow.get());
     createUI();
     connectUI();
+    populateDirectory();
 }
 
 // Clean up
@@ -52,7 +55,7 @@ void MainWindow::createUI(void) {
 void MainWindow::connectUI(void) {
     QObject::connect(m_pExitButton.get(), &QAbstractButton::clicked, this, &MainWindow::exitButtonClicked);
     // TODO: refresh directory list on click
-    //QObject::connect(m_pDirectoryBox.get(), &QAbstractButton::clicked, this, &MainWindow::directoryButtonClicked);
+    //QObject::connect(m_pDirectoryBox.get(), &QComboBox::activated, this, &MainWindow::directoryButtonClicked);
 }
 
 // Read qss file in for styling
@@ -69,9 +72,20 @@ void MainWindow::exitSignal(void) {
     exit(0);
 }
 
-// Directory should be polled here and updated with information for menu
-void MainWindow::directoryButtonClicked(void) {
-    //emit directorySignal();
+// Let box know it should populate with values
+void MainWindow::populateDirectory(void) {
+    std::string path = getenv("XDG_CONFIG_HOME");
+    if (path.empty()) {
+        // TODO: add actual error info here for user
+        std::cerr << "[directory] XDG_CONFIG_HOME not bound" << std::endl;
+        return;
+    }
+    m_pDirectoryBox->clear();
+    m_pDirectoryBox->addItem("<none>");
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_directory())
+            m_pDirectoryBox->addItem(entry.path().filename().c_str());
+    }
 }
 
 void MainWindow::exitButtonClicked(void) {
