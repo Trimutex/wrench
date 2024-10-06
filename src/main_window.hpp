@@ -23,6 +23,7 @@ private:
     void connectUI(void);
     void readQss(void);
     void populateDirectory(void);
+    void populateFiles(void);
 
     // Window itself
     std::shared_ptr<QWidget>        m_pWindow;

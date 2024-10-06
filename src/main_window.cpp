@@ -55,7 +55,7 @@ void MainWindow::createUI(void) {
 void MainWindow::connectUI(void) {
     QObject::connect(m_pExitButton.get(), &QAbstractButton::clicked, this, &MainWindow::exitButtonClicked);
     // TODO: refresh directory list on click
-    //QObject::connect(m_pDirectoryBox.get(), &QComboBox::activated, this, &MainWindow::directoryButtonClicked);
+    QObject::connect(m_pDirectoryBox.get(), &QComboBox::activated, this, &MainWindow::populateFiles);
 }
 
 // Read qss file in for styling
@@ -75,16 +75,35 @@ void MainWindow::exitSignal(void) {
 // Let box know it should populate with values
 void MainWindow::populateDirectory(void) {
     std::string path = getenv("XDG_CONFIG_HOME");
+    m_pDirectoryBox->clear();
+    m_pDirectoryBox->addItem("<none>");
     if (path.empty()) {
         // TODO: add actual error info here for user
         std::cerr << "[directory] XDG_CONFIG_HOME not bound" << std::endl;
         return;
     }
-    m_pDirectoryBox->clear();
-    m_pDirectoryBox->addItem("<none>");
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         if (entry.is_directory())
             m_pDirectoryBox->addItem(entry.path().filename().c_str());
+    }
+}
+
+void MainWindow::populateFiles(void) {
+    std::string path = getenv("XDG_CONFIG_HOME");
+    m_pFileBox->clear();
+    m_pFileBox->addItem("<none>");
+    if (path.empty()) {
+        // TODO: add actual error info here for user
+        std::cerr << "[directory] XDG_CONFIG_HOME not bound" << std::endl;
+        return;
+    }
+    if (m_pDirectoryBox->currentIndex() == 0 || m_pDirectoryBox->currentIndex() == -1) {
+        std::cerr << "[files] no directory set yet" << std::endl;
+        return;
+    }
+    path.append("/" + m_pDirectoryBox->currentText().toStdString());
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        m_pFileBox->addItem(entry.path().filename().c_str());
     }
 }
 
