@@ -86,6 +86,7 @@ void MainWindow::populateDirectory(void) {
         if (entry.is_directory())
             m_pDirectoryBox->addItem(entry.path().filename().c_str());
     }
+    m_pDirectoryBox->model()->sort(0, Qt::AscendingOrder);
 }
 
 void MainWindow::populateFiles(void) {
@@ -102,9 +103,10 @@ void MainWindow::populateFiles(void) {
         return;
     }
     path.append("/" + m_pDirectoryBox->currentText().toStdString());
-    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
         m_pFileBox->addItem(entry.path().filename().c_str());
     }
+    m_pFileBox->model()->sort(0, Qt::AscendingOrder);
 }
 
 void MainWindow::exitButtonClicked(void) {
