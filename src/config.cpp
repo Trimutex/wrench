@@ -21,23 +21,24 @@ void ConfigWidget::readConfigFile(std::string path) {
     for (std::string line; std::getline(configFile, line); ) {
         if (line.size() == 0 || line[0] == '#')
             continue;
-        m_pConfigList->addItem(line.c_str());
-    }
-}
+        std::shared_ptr<QWidget> configWidget = std::make_shared<QWidget>(m_pParent.get());
+        std::shared_ptr<QListWidgetItem> configItem = std::make_shared<QListWidgetItem>();
+        std::shared_ptr<QHBoxLayout> configLine = std::make_shared<QHBoxLayout>(configWidget.get());
+        std::string _configKey;
+        std::string _configValue;
+        std::shared_ptr<QTextEdit> configKey = std::make_shared<QTextEdit>();
+        std::shared_ptr<QTextEdit> configValue = std::make_shared<QTextEdit>();;
 
-// Populate mapped data vector
-// TODO: actually pull in data and split from a config file
-//       probably do so on an emit when file selection occurs
-//       use both items in pair for config window
-void ConfigWidget::PopulateData(void) {
-    for (int i = 0; i < 100; ++i) {
-        std::shared_ptr<QComboBox> item = std::make_shared<QComboBox>(m_pParent.get());
-        std::shared_ptr<QComboBox> value = std::make_shared<QComboBox>(m_pParent.get());
-        std::string itemString = "Item " + std::to_string(i);
-        std::string valueString = "Value " + std::to_string(i);
-        item->addItem(itemString.c_str());
-        value->addItem(valueString.c_str());
-        m_pConfigList->addItem(itemString.c_str());
-        //m_vConfigData.emplace_back(std::make_pair(item, value));
+        std::getline(std::stringstream(line), _configKey, '=');
+        std::getline(std::stringstream(line), _configValue);
+        configKey->setText(_configKey.c_str());
+        configValue->setText(_configValue.c_str());
+
+        configLine->addWidget(configKey.get());
+        configLine->addWidget(configValue.get());
+        configWidget->setLayout(configLine.get());
+        configItem->setSizeHint(configWidget->sizeHint());
+        m_pConfigList->addItem(configItem.get());
+        m_pConfigList->setItemWidget(configItem.get(), configWidget.get());
     }
 }
