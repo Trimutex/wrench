@@ -56,6 +56,7 @@ void MainWindow::connectUI(void) {
     QObject::connect(m_pExitButton.get(), &QAbstractButton::clicked, this, &MainWindow::exitButtonClicked);
     // TODO: refresh directory list on click
     QObject::connect(m_pDirectoryBox.get(), &QComboBox::activated, this, &MainWindow::populateFiles);
+    QObject::connect(m_pFileBox.get(), &QComboBox::activated, this, &MainWindow::readConfigFile);
 }
 
 // Read qss file in for styling
@@ -74,39 +75,50 @@ void MainWindow::exitSignal(void) {
 
 // Let box know it should populate with values
 void MainWindow::populateDirectory(void) {
-    std::string path = getenv("XDG_CONFIG_HOME");
+    std::string CONFHOME = getenv("XDG_CONFIG_HOME");
     m_pDirectoryBox->clear();
     m_pDirectoryBox->addItem("<none>");
-    if (path.empty()) {
+    if (CONFHOME.empty()) {
         // TODO: add actual error info here for user
         std::cerr << "[directory] XDG_CONFIG_HOME not bound" << std::endl;
         return;
     }
-    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+    for (const auto& entry : std::filesystem::directory_iterator(CONFHOME)) {
         if (entry.is_directory())
             m_pDirectoryBox->addItem(entry.path().filename().c_str());
     }
     m_pDirectoryBox->model()->sort(0, Qt::AscendingOrder);
+    m_sCurrentPath = CONFHOME;
 }
 
 void MainWindow::populateFiles(void) {
-    std::string path = getenv("XDG_CONFIG_HOME");
+    std::string CONFHOME = getenv("XDG_CONFIG_HOME");
+    if (m_pDirectoryBox->currentIndex() == 0 || m_pDirectoryBox->currentIndex() == -1) {
+        std::cout << "[files] no directory set yet" << std::endl;
+        return;
+    }
     m_pFileBox->clear();
     m_pFileBox->addItem("<none>");
-    if (path.empty()) {
-        // TODO: add actual error info here for user
-        std::cerr << "[directory] XDG_CONFIG_HOME not bound" << std::endl;
-        return;
-    }
-    if (m_pDirectoryBox->currentIndex() == 0 || m_pDirectoryBox->currentIndex() == -1) {
-        std::cerr << "[files] no directory set yet" << std::endl;
-        return;
-    }
-    path.append("/" + m_pDirectoryBox->currentText().toStdString());
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
+    m_sCurrentPath = CONFHOME + "/" + m_pDirectoryBox->currentText().toStdString();
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(m_sCurrentPath)) {
         m_pFileBox->addItem(entry.path().filename().c_str());
     }
     m_pFileBox->model()->sort(0, Qt::AscendingOrder);
+}
+
+void MainWindow::readConfigFile(void) {
+    std::string selectedFile = m_pFileBox->currentText().toStdString();
+    if (selectedFile == "<none>")
+        return;
+    std::string CONFHOME = getenv("XDG_CONFIG_HOME");
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(m_sCurrentPath)) {
+        if (selectedFile != entry.path().filename().c_str())
+            continue;
+        selectedFile = entry.path().c_str();
+    }
+    if (selectedFile[0] != '/')
+        std::cerr << "[config] File not found in path!" << std::endl;
+    m_pConfigValues->readConfigFile(selectedFile);
 }
 
 void MainWindow::exitButtonClicked(void) {

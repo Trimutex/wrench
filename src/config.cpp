@@ -1,14 +1,28 @@
 #include "config.hpp"
-#include <QTextEdit>
+#include <fstream>
+#include <iostream>
 #include <string>
+#include <QTextEdit>
 
 ConfigWidget::ConfigWidget(QWidget* _parent) : m_pParent(_parent) {
     m_pConfigList = std::make_shared<QListWidget>(m_pParent.get());
-    PopulateData();
 }
 
 ConfigWidget::~ConfigWidget() {
     m_pConfigList.reset();
+}
+
+void ConfigWidget::readConfigFile(std::string path) {
+    std::ifstream configFile(path);
+    if (!configFile.is_open()) {
+        std::cerr << "[Config] Error opening file! Does file even exist?" << std::endl;
+    }
+    m_pConfigList->clear();
+    for (std::string line; std::getline(configFile, line); ) {
+        if (line.size() == 0 || line[0] == '#')
+            continue;
+        m_pConfigList->addItem(line.c_str());
+    }
 }
 
 // Populate mapped data vector
