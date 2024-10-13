@@ -42,17 +42,43 @@ void ConfigWidget::readConfigFile(std::string path) {
         return;
     }
     m_vConfigLines.clear();
-    for (std::string line; std::getline(configFile, line); ) {
-        if (line.size() == 0 || line[0] == '#')
+    int indentCount = 0;
+    bool indentWarned = false;
+    for (std::string _line; std::getline(configFile, _line); ) {
+        if (_line.size() == 0 || _line[0] == '#')
             continue;
+        std::stringstream line(_line);
         std::string _configKey;
         std::string _configValue;
+        
+        if (_line.find_first_of('{', 0) != std::string::npos) {
+            _line.erase(std::remove_if(_line.begin(), _line.end(), isCharRemovable), _line.end());
+            _configKey = _line;
+            _configValue = '{';
+            ++indentCount;
+        } else if (_line.find_first_of('}', 0) != std::string::npos) {
+            _configKey = '}';
+            _configValue = ' ';
+            --indentCount;
+        } else {
+            // TODO: Fix RHS not only getting other half
+            std::getline(line, _configKey, '=');
+            std::getline(line, _configValue);
+        }
 
-        std::getline(std::stringstream(line), _configKey, '=');
-        std::getline(std::stringstream(line), _configValue);
+        if (indentCount < 0 && !indentWarned) {
+            std::cerr << "[config] Indentation mistake found! Problems may arise here" << std::endl;
+            indentWarned = true;
+        }
+
         std::shared_ptr<ConfigPair> newPair = std::make_shared<ConfigPair>(_configKey, _configValue, m_pContainer.get());
         m_vConfigLines.push_back(newPair);
-
         m_pLayout->addWidget(newPair.get());
     }
+}
+
+bool ConfigWidget::isCharRemovable(char c) {
+    if (isalpha(c))
+        return false;
+    return true;
 }
