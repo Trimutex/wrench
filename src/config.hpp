@@ -7,13 +7,16 @@
 
 class ConfigPair : public QWidget {
 public:
-    explicit ConfigPair(std::string _key, std::string _value, QWidget* _parent = nullptr);
+    explicit ConfigPair(std::string _key, std::string _value, int _indent, QWidget* _parent = nullptr);
     ~ConfigPair();
 
 private:
-    std::shared_ptr<QHBoxLayout>    m_pLayout;
-    std::shared_ptr<QLineEdit>      m_pKey;
-    std::shared_ptr<QLineEdit>      m_pValue;
+    std::vector< std::unique_ptr<QWidget> > m_vWhitespace;
+    std::unique_ptr<QHBoxLayout>            m_pLayout;
+    std::unique_ptr<QLineEdit>              m_pKey;
+    std::unique_ptr<QLineEdit>              m_pValue;
+    int                                     m_iIndentSize;
+    std::string trim(const std::string& str, const std::string& whitespace = " ");
 };
 
 // Main widget for handling config editing area

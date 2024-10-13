@@ -2,14 +2,34 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <QLabel>
 
-ConfigPair::ConfigPair(std::string _key, std::string _value, QWidget* _parent) : QWidget(_parent) {
-    m_pLayout = std::make_shared<QHBoxLayout>(this);
-    m_pKey = std::make_shared<QLineEdit>();
-    m_pValue = std::make_shared<QLineEdit>();
+ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
+        QWidget* _parent) : QWidget(_parent) {
+    m_pLayout = std::make_unique<QHBoxLayout>(this);
+    m_pKey = std::make_unique<QLineEdit>();
+    m_pValue = std::make_unique<QLineEdit>();
 
+    _key = trim(_key);
+    _value = trim(_value);
     m_pKey->setText(_key.c_str());
     m_pValue->setText(_value.c_str());
+
+    if (_value.compare("{") == 0) {
+        m_pValue->setReadOnly(true);
+        m_iIndentSize = _indent - 1;
+    } else if (_key.compare("}") == 0) {
+        m_pKey->setReadOnly(true);
+        m_pValue->setReadOnly(true);
+        m_iIndentSize = _indent;
+    } else
+        m_iIndentSize = _indent;
+
+    for (int i = 0; i < m_iIndentSize; ++i) {
+        m_vWhitespace.emplace_back(std::make_unique<QWidget>());
+        m_vWhitespace.back()->setFixedSize(4, 4);
+        m_pLayout->addWidget(m_vWhitespace.back().get());
+    }
 
     m_pLayout->addWidget(m_pKey.get());
     m_pLayout->addWidget(m_pValue.get());
@@ -19,6 +39,18 @@ ConfigPair::~ConfigPair() {
     m_pLayout.reset();
     m_pKey.reset();
     m_pValue.reset();
+    m_vWhitespace.clear();
+}
+
+std::string ConfigPair::trim(const std::string& str, const std::string& whitespace) {
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
 }
 
 ConfigWidget::ConfigWidget(QWidget* _parent) : QScrollArea(_parent) {
@@ -61,17 +93,20 @@ void ConfigWidget::readConfigFile(std::string path) {
             _configValue = ' ';
             --indentCount;
         } else {
-            // TODO: Fix RHS not only getting other half
             std::getline(line, _configKey, '=');
             std::getline(line, _configValue);
         }
 
-        if (indentCount < 0 && !indentWarned) {
-            std::cerr << "[config] Indentation mistake found! Problems may arise here" << std::endl;
-            indentWarned = true;
-        }
+        std::shared_ptr<ConfigPair> newPair;
+        if (indentCount < 0) {
+            if (!indentWarned) {
+                std::cerr << "[config] Indentation mistake found! Problems may arise here" << std::endl;
+                indentWarned = true;
+            }
+            newPair = std::make_shared<ConfigPair>(_configKey, _configValue, 0, m_pContainer.get());
+        } else
+            newPair = std::make_shared<ConfigPair>(_configKey, _configValue, indentCount, m_pContainer.get());
 
-        std::shared_ptr<ConfigPair> newPair = std::make_shared<ConfigPair>(_configKey, _configValue, m_pContainer.get());
         m_vConfigLines.push_back(newPair);
         m_pLayout->addWidget(newPair.get());
     }
