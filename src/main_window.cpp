@@ -6,12 +6,12 @@
 #include <QPushButton>
 
 MainWindow::MainWindow(QWidget* _parent) : QMainWindow(_parent) {
-    m_pWindow = std::make_shared<QWidget>();
+    m_pWindow = std::make_shared<QWidget>(_parent);
     m_pGridLayout = std::make_shared<QGridLayout>(m_pWindow.get());
     m_pDirectoryBox = std::make_shared<QComboBox>(m_pWindow.get());
     m_pFileBox = std::make_shared<QComboBox>(m_pWindow.get());
     m_pExitButton = std::make_shared<QPushButton>(m_pWindow.get());
-    m_pConfigValues = std::make_shared<ConfigWidget>(m_pWindow.get());
+    m_pConfig = std::make_shared<ConfigWidget>(m_pWindow.get());
     createUI();
     connectUI();
     populateDirectory();
@@ -24,7 +24,7 @@ MainWindow::~MainWindow() {
     m_pDirectoryBox.reset();
     m_pFileBox.reset();
     m_pExitButton.reset();
-    m_pConfigValues.reset();
+    m_pConfig.reset();
 }
 
 // Create objects for GUI
@@ -41,11 +41,12 @@ void MainWindow::createUI(void) {
     m_pFileBox->insertItem(0, "No Directory Selected");
     m_pExitButton->setText("Exit");
 
+
     // Add individual widgets to stacked widget 
     m_pGridLayout->addWidget(m_pDirectoryBox.get(), 0, 0, 1, 2);
     m_pGridLayout->addWidget(m_pFileBox.get(), 0, 2, 1, 2);
     m_pGridLayout->addWidget(m_pExitButton.get(), 0, 5);
-    m_pGridLayout->addWidget(m_pConfigValues->m_pConfigList.get(), 1, 0, -1, -1);
+    m_pGridLayout->addWidget(m_pConfig.get(), 1, 0, -1, -1);
 
     m_pWindow->setFixedSize(1280, 1024);
     m_pWindow->show();
@@ -54,7 +55,6 @@ void MainWindow::createUI(void) {
 // Connect buttons to implementations
 void MainWindow::connectUI(void) {
     QObject::connect(m_pExitButton.get(), &QAbstractButton::clicked, this, &MainWindow::exitButtonClicked);
-    // TODO: refresh directory list on click
     QObject::connect(m_pDirectoryBox.get(), &QComboBox::activated, this, &MainWindow::populateFiles);
     QObject::connect(m_pFileBox.get(), &QComboBox::activated, this, &MainWindow::readConfigFile);
 }
@@ -118,7 +118,7 @@ void MainWindow::readConfigFile(void) {
     }
     if (selectedFile[0] != '/')
         std::cerr << "[config] File not found in path!" << std::endl;
-    m_pConfigValues->readConfigFile(selectedFile);
+    m_pConfig->readConfigFile(selectedFile);
 }
 
 void MainWindow::exitButtonClicked(void) {

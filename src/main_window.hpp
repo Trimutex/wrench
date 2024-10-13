@@ -11,7 +11,7 @@
 
 class MainWindow : public QMainWindow {
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 signals:
@@ -38,7 +38,7 @@ private:
     std::shared_ptr<QPushButton>    m_pExitButton;
     
     // Config section of window
-    std::shared_ptr<ConfigWidget>   m_pConfigValues;
+    std::shared_ptr<ConfigWidget>   m_pConfig;
 
     // Current active path
     std::string                     m_sCurrentPath;
