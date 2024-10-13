@@ -1,17 +1,17 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include "config.hpp"
 #include <memory>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
-#include "config.hpp"
 
 class MainWindow : public QMainWindow {
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 signals:
@@ -24,6 +24,7 @@ private:
     void readQss(void);
     void populateDirectory(void);
     void populateFiles(void);
+    void readConfigFile(void);
 
     // Window itself
     std::shared_ptr<QWidget>        m_pWindow;
@@ -37,7 +38,10 @@ private:
     std::shared_ptr<QPushButton>    m_pExitButton;
     
     // Config section of window
-    std::shared_ptr<ConfigWidget>   m_pConfigValues;
+    std::shared_ptr<ConfigWidget>   m_pConfig;
+
+    // Current active path
+    std::string                     m_sCurrentPath;
 };
 
 #endif

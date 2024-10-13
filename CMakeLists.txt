@@ -9,4 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
-add_subdirectory(src)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
+file(GLOB_RECURSE SRCFILES "src/*.cpp")
+add_executable(wrench ${SRCFILES})
+
+target_link_libraries(wrench PRIVATE Qt6::Widgets)
