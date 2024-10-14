@@ -27,10 +27,11 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
 
     for (int i = 0; i < m_iIndentSize; ++i) {
         m_vWhitespace.emplace_back(std::make_unique<QWidget>());
-        m_vWhitespace.back()->setFixedSize(4, 4);
+        m_vWhitespace.back()->setFixedSize(20, 20);
         m_pLayout->addWidget(m_vWhitespace.back().get());
     }
 
+    m_pKey->setMaximumWidth(240);
     m_pLayout->addWidget(m_pKey.get());
     m_pLayout->addWidget(m_pValue.get());
 }
