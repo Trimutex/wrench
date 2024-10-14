@@ -29,7 +29,7 @@ QPushButton:pressed {
    background-color: #ea999c;
 }
 
-QTextEdit {
+QLineEdit {
     border: 1px solid #51576d;
     background-color: #303446;
     padding: 10px;
@@ -37,7 +37,7 @@ QTextEdit {
     border-radius: 12px;
 }
 
-QLabel {
+QComboBox {
     border: 1px solid #bcc0cc;
     background-color: #eff1f5;
     padding: 10px;

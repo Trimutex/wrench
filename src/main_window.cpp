@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget* _parent) : QMainWindow(_parent) {
     createUI();
     connectUI();
     populateDirectory();
+    readQss();
+    m_pWindow->show();
 }
 
 // Clean up
@@ -49,7 +51,6 @@ void MainWindow::createUI(void) {
     m_pGridLayout->addWidget(m_pConfig.get(), 1, 0, -1, -1);
 
     m_pWindow->setFixedSize(1280, 1024);
-    m_pWindow->show();
 }
 
 // Connect buttons to implementations
@@ -62,10 +63,14 @@ void MainWindow::connectUI(void) {
 // Read qss file in for styling
 // TODO: add feature in
 void MainWindow::readQss(void) {
-    //QFile styleFile(":/qss/main_window.qss");
-    //styleFile.open(QFile::ReadOnly);
-    //mywidget->setStyleSheet(QString::fromLatin1(styleFile.readAll()));
-    //styleFile.close();
+    QFile styleFile("src/qss/main_window.qss");
+    styleFile.open(QFile::ReadOnly);
+    if (!styleFile.isOpen()) {
+        std::cerr << "[qss] Unable to open file for qss, does it even exist?" << std::endl;
+        return;
+    }
+    m_pWindow->setStyleSheet(QString::fromLatin1(styleFile.readAll()));
+    styleFile.close();
 }
 
 // Exit the program
