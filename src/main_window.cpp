@@ -11,10 +11,13 @@ MainWindow::MainWindow(QWidget* _parent) : QMainWindow(_parent) {
     m_pDirectoryBox = std::make_shared<QComboBox>(m_pWindow.get());
     m_pFileBox = std::make_shared<QComboBox>(m_pWindow.get());
     m_pExitButton = std::make_shared<QPushButton>(m_pWindow.get());
+    m_pPathText = std::make_shared<QLabel>(m_pWindow.get());
     m_pConfig = std::make_shared<ConfigWidget>(m_pWindow.get());
     createUI();
     connectUI();
     populateDirectory();
+    readQss();
+    m_pWindow->show();
 }
 
 // Clean up
@@ -24,17 +27,12 @@ MainWindow::~MainWindow() {
     m_pDirectoryBox.reset();
     m_pFileBox.reset();
     m_pExitButton.reset();
+    m_pPathText.reset();
     m_pConfig.reset();
 }
 
 // Create objects for GUI
 void MainWindow::createUI(void) {
-    // TODO: move when switching to qss
-    m_pWindow->setStyleSheet
-        (
-                "background-color: #292c3c;"
-                "font: 12pt Arial;"
-        );
     m_pGridLayout->setParent(m_pWindow.get());
     m_pGridLayout->setColumnMinimumWidth(1, 500);
     m_pDirectoryBox->insertItem(0, "Select Directory");
@@ -45,11 +43,11 @@ void MainWindow::createUI(void) {
     // Add individual widgets to stacked widget 
     m_pGridLayout->addWidget(m_pDirectoryBox.get(), 0, 0, 1, 2);
     m_pGridLayout->addWidget(m_pFileBox.get(), 0, 2, 1, 2);
-    m_pGridLayout->addWidget(m_pExitButton.get(), 0, 5);
-    m_pGridLayout->addWidget(m_pConfig.get(), 1, 0, -1, -1);
+    m_pGridLayout->addWidget(m_pExitButton.get(), 0, 5, 1, 1);
+    m_pGridLayout->addWidget(m_pPathText.get(), 2, 0, 1, -1);
+    m_pGridLayout->addWidget(m_pConfig.get(), 3, 0, -1, -1);
 
     m_pWindow->setFixedSize(1280, 1024);
-    m_pWindow->show();
 }
 
 // Connect buttons to implementations
@@ -60,12 +58,15 @@ void MainWindow::connectUI(void) {
 }
 
 // Read qss file in for styling
-// TODO: add feature in
 void MainWindow::readQss(void) {
-    //QFile styleFile(":/qss/main_window.qss");
-    //styleFile.open(QFile::ReadOnly);
-    //mywidget->setStyleSheet(QString::fromLatin1(styleFile.readAll()));
-    //styleFile.close();
+    QFile styleFile("src/qss/main_window.qss");
+    styleFile.open(QFile::ReadOnly);
+    if (!styleFile.isOpen()) {
+        std::cerr << "[qss] Unable to open file for qss, does it even exist?" << std::endl;
+        return;
+    }
+    m_pWindow->setStyleSheet(QString::fromLatin1(styleFile.readAll()));
+    styleFile.close();
 }
 
 // Exit the program
@@ -89,6 +90,7 @@ void MainWindow::populateDirectory(void) {
     }
     m_pDirectoryBox->model()->sort(0, Qt::AscendingOrder);
     m_sCurrentPath = CONFHOME;
+    m_pPathText->setText(m_sCurrentPath.c_str());
 }
 
 void MainWindow::populateFiles(void) {
@@ -104,6 +106,7 @@ void MainWindow::populateFiles(void) {
         m_pFileBox->addItem(entry.path().filename().c_str());
     }
     m_pFileBox->model()->sort(0, Qt::AscendingOrder);
+    m_pPathText->setText(m_sCurrentPath.c_str());
 }
 
 void MainWindow::readConfigFile(void) {
@@ -119,6 +122,7 @@ void MainWindow::readConfigFile(void) {
     if (selectedFile[0] != '/')
         std::cerr << "[config] File not found in path!" << std::endl;
     m_pConfig->readConfigFile(selectedFile);
+    m_pPathText->setText(selectedFile.c_str());
 }
 
 void MainWindow::exitButtonClicked(void) {

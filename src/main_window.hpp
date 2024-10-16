@@ -36,6 +36,7 @@ private:
     std::shared_ptr<QComboBox>      m_pDirectoryBox;
     std::shared_ptr<QComboBox>      m_pFileBox;
     std::shared_ptr<QPushButton>    m_pExitButton;
+    std::shared_ptr<QLabel>         m_pPathText;
     
     // Config section of window
     std::shared_ptr<ConfigWidget>   m_pConfig;
