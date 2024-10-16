@@ -58,7 +58,6 @@ void MainWindow::connectUI(void) {
 }
 
 // Read qss file in for styling
-// TODO: add feature in
 void MainWindow::readQss(void) {
     QFile styleFile("src/qss/main_window.qss");
     styleFile.open(QFile::ReadOnly);
