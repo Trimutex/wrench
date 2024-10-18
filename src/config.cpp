@@ -33,7 +33,7 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pLayout->addWidget(m_pValue.get());
 }
 std::pair<std::string, std::string> ConfigPair::get() {
-    return std::make_pair(_m_sKey, _m_sValue);
+    return std::make_pair(m_pKey->text().toStdString(), m_pValue->text().toStdString());
 }
 
 void ConfigPair::set(std::string _key, std::string _value) {
