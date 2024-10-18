@@ -15,8 +15,10 @@ public:
     ~MainWindow();
 
 signals:
+    void saveSignal(void);
     void exitSignal(void);
 public slots:
+    void saveButtonClicked(void);
     void exitButtonClicked(void);
 private:
     void createUI(void);
@@ -35,6 +37,7 @@ private:
     // Top buttons for choosing file
     std::shared_ptr<QComboBox>      m_pDirectoryBox;
     std::shared_ptr<QComboBox>      m_pFileBox;
+    std::shared_ptr<QPushButton>    m_pSaveButton;
     std::shared_ptr<QPushButton>    m_pExitButton;
     std::shared_ptr<QLabel>         m_pPathText;
     

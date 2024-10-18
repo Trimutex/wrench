@@ -1,5 +1,6 @@
 #include "main_window.hpp"
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <QFile>
 #include <QPainter>
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget* _parent) : QMainWindow(_parent) {
     m_pGridLayout = std::make_shared<QGridLayout>(m_pWindow.get());
     m_pDirectoryBox = std::make_shared<QComboBox>(m_pWindow.get());
     m_pFileBox = std::make_shared<QComboBox>(m_pWindow.get());
+    m_pSaveButton = std::make_shared<QPushButton>(m_pWindow.get());
     m_pExitButton = std::make_shared<QPushButton>(m_pWindow.get());
     m_pPathText = std::make_shared<QLabel>(m_pWindow.get());
     m_pConfig = std::make_shared<ConfigWidget>(m_pWindow.get());
@@ -26,6 +28,7 @@ MainWindow::~MainWindow() {
     m_pGridLayout.reset();
     m_pDirectoryBox.reset();
     m_pFileBox.reset();
+    m_pSaveButton.reset();
     m_pExitButton.reset();
     m_pPathText.reset();
     m_pConfig.reset();
@@ -37,12 +40,14 @@ void MainWindow::createUI(void) {
     m_pGridLayout->setColumnMinimumWidth(1, 500);
     m_pDirectoryBox->insertItem(0, "Select Directory");
     m_pFileBox->insertItem(0, "No Directory Selected");
+    m_pSaveButton->setText("Save");
     m_pExitButton->setText("Exit");
 
 
     // Add individual widgets to stacked widget 
     m_pGridLayout->addWidget(m_pDirectoryBox.get(), 0, 0, 1, 2);
     m_pGridLayout->addWidget(m_pFileBox.get(), 0, 2, 1, 2);
+    m_pGridLayout->addWidget(m_pSaveButton.get(), 0, 4, 1, 1);
     m_pGridLayout->addWidget(m_pExitButton.get(), 0, 5, 1, 1);
     m_pGridLayout->addWidget(m_pPathText.get(), 2, 0, 1, -1);
     m_pGridLayout->addWidget(m_pConfig.get(), 3, 0, -1, -1);
@@ -52,6 +57,7 @@ void MainWindow::createUI(void) {
 
 // Connect buttons to implementations
 void MainWindow::connectUI(void) {
+    QObject::connect(m_pSaveButton.get(), &QAbstractButton::clicked, this, &MainWindow::saveButtonClicked);
     QObject::connect(m_pExitButton.get(), &QAbstractButton::clicked, this, &MainWindow::exitButtonClicked);
     QObject::connect(m_pDirectoryBox.get(), &QComboBox::activated, this, &MainWindow::populateFiles);
     QObject::connect(m_pFileBox.get(), &QComboBox::activated, this, &MainWindow::readConfigFile);
@@ -67,6 +73,27 @@ void MainWindow::readQss(void) {
     }
     m_pWindow->setStyleSheet(QString::fromLatin1(styleFile.readAll()));
     styleFile.close();
+}
+
+// Save current file
+void MainWindow::saveSignal(void) {
+    std::string selectedFile = m_pFileBox->currentText().toStdString();
+    if (selectedFile.compare("<none>") == 0 || selectedFile.compare("No Directory Selected") == 0) {
+        std::cerr << "[save] Save button clicked, but no file being edited" << std::endl;
+        return;
+    }
+    std::string CONFHOME = getenv("XDG_CONFIG_HOME");
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(m_sCurrentPath)) {
+        if (selectedFile != entry.path().filename().c_str())
+            continue;
+        selectedFile = entry.path().c_str();
+    }
+    if (selectedFile[0] != '/') {
+        std::cerr << "[config] File not found in path!" << std::endl;
+        return;
+    }
+    m_pConfig->writeConfigFile(selectedFile);
+    std::cout << "[save] file save completed" << std::endl;
 }
 
 // Exit the program
@@ -111,7 +138,7 @@ void MainWindow::populateFiles(void) {
 
 void MainWindow::readConfigFile(void) {
     std::string selectedFile = m_pFileBox->currentText().toStdString();
-    if (selectedFile == "<none>")
+    if (selectedFile.compare("<none>") == 0 || selectedFile.compare("No Directory Selected") == 0)
         return;
     std::string CONFHOME = getenv("XDG_CONFIG_HOME");
     for (const auto& entry : std::filesystem::recursive_directory_iterator(m_sCurrentPath)) {
@@ -119,10 +146,16 @@ void MainWindow::readConfigFile(void) {
             continue;
         selectedFile = entry.path().c_str();
     }
-    if (selectedFile[0] != '/')
+    if (selectedFile[0] != '/') {
         std::cerr << "[config] File not found in path!" << std::endl;
+        return;
+    }
     m_pConfig->readConfigFile(selectedFile);
     m_pPathText->setText(selectedFile.c_str());
+}
+
+void MainWindow::saveButtonClicked(void) {
+    emit saveSignal();
 }
 
 void MainWindow::exitButtonClicked(void) {
