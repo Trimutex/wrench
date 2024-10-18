@@ -10,15 +10,12 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pKey = std::make_unique<QLineEdit>();
     m_pValue = std::make_unique<QLineEdit>();
 
-    _key = trim(_key);
-    _value = trim(_value);
-    m_pKey->setText(_key.c_str());
-    m_pValue->setText(_value.c_str());
+    this->set(_key, _value);
 
-    if (_value.compare("{") == 0) {
+    if (_m_sValue.compare("{") == 0) {
         m_pValue->setReadOnly(true);
         m_iIndentSize = _indent - 1;
-    } else if (_key.compare("}") == 0) {
+    } else if (_m_sKey.compare("}") == 0) {
         m_pKey->setReadOnly(true);
         m_pValue->setReadOnly(true);
         m_iIndentSize = _indent;
@@ -34,6 +31,16 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pKey->setMaximumWidth(240);
     m_pLayout->addWidget(m_pKey.get());
     m_pLayout->addWidget(m_pValue.get());
+}
+std::pair<std::string, std::string> ConfigPair::get() {
+    return std::make_pair(_m_sKey, _m_sValue);
+}
+
+void ConfigPair::set(std::string _key, std::string _value) {
+    _m_sKey = trim(_key);
+    _m_sValue = trim(_value);
+    m_pKey->setText(_m_sKey.c_str());
+    m_pValue->setText(_m_sValue.c_str());
 }
 
 ConfigPair::~ConfigPair() {
@@ -110,6 +117,27 @@ void ConfigWidget::readConfigFile(std::string path) {
 
         m_vConfigLines.push_back(newPair);
         m_pLayout->addWidget(newPair.get());
+    }
+}
+
+void ConfigWidget::writeConfigFile(std::string path) {
+    std::ofstream configFile(path, std::ios::out);
+    if (!configFile.is_open()) {
+        std::cerr << "[Config] Error opening file! Does file even exist?" << std::endl;
+        std::cerr << "[Config] File path: " << path << std::endl;
+        return;
+    }
+    for (auto configLine : m_vConfigLines) {
+        for (int i = 0; i < configLine->m_iIndentSize; ++i)
+            configFile << '\t';
+        auto pair = configLine->get();
+        if (pair.second.compare("{") == 0)
+            configFile << pair.first << " " << pair.second;
+        else if (pair.first.compare("}") == 0)
+            configFile << pair.first;
+        else 
+            configFile << pair.first << " = " << pair.second;
+        configFile << '\n';
     }
 }
 

@@ -1,5 +1,6 @@
 #include "main_window.hpp"
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <QFile>
 #include <QPainter>
@@ -78,9 +79,21 @@ void MainWindow::readQss(void) {
 void MainWindow::saveSignal(void) {
     std::string selectedFile = m_pFileBox->currentText().toStdString();
     if (selectedFile.compare("<none>") == 0 || selectedFile.compare("No Directory Selected") == 0) {
-        std::cout << "[save] Save button clicked, but no file being edited" << std::endl;
+        std::cerr << "[save] Save button clicked, but no file being edited" << std::endl;
         return;
     }
+    std::string CONFHOME = getenv("XDG_CONFIG_HOME");
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(m_sCurrentPath)) {
+        if (selectedFile != entry.path().filename().c_str())
+            continue;
+        selectedFile = entry.path().c_str();
+    }
+    if (selectedFile[0] != '/') {
+        std::cerr << "[config] File not found in path!" << std::endl;
+        return;
+    }
+    m_pConfig->writeConfigFile(selectedFile);
+    std::cout << "[save] file save completed" << std::endl;
 }
 
 // Exit the program
@@ -125,7 +138,7 @@ void MainWindow::populateFiles(void) {
 
 void MainWindow::readConfigFile(void) {
     std::string selectedFile = m_pFileBox->currentText().toStdString();
-    if (selectedFile.compare("<none>") == 0)
+    if (selectedFile.compare("<none>") == 0 || selectedFile.compare("No Directory Selected") == 0)
         return;
     std::string CONFHOME = getenv("XDG_CONFIG_HOME");
     for (const auto& entry : std::filesystem::recursive_directory_iterator(m_sCurrentPath)) {
@@ -133,8 +146,10 @@ void MainWindow::readConfigFile(void) {
             continue;
         selectedFile = entry.path().c_str();
     }
-    if (selectedFile[0] != '/')
+    if (selectedFile[0] != '/') {
         std::cerr << "[config] File not found in path!" << std::endl;
+        return;
+    }
     m_pConfig->readConfigFile(selectedFile);
     m_pPathText->setText(selectedFile.c_str());
 }
