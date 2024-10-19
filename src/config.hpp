@@ -21,7 +21,7 @@ private:
     std::unique_ptr<QHBoxLayout>            m_pLayout;
     std::string                             _m_sKey;
     std::string                             _m_sValue;
-    std::string trim(const std::string& str, const std::string& whitespace = " ");
+    std::string trim(const std::string& str, const char& whitespace = ' ');
 };
 
 // Main widget for handling config editing area

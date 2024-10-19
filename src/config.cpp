@@ -40,8 +40,14 @@ std::pair<std::string, std::string> ConfigPair::get() {
 }
 
 void ConfigPair::set(std::string _key, std::string _value) {
-    _m_sKey = trim(_key);
-    _m_sValue = trim(_value);
+    _m_sKey = _key;
+    _m_sKey = trim(_m_sKey);
+    _m_sKey = trim(_m_sKey, '\t');
+
+    _m_sValue = _value;
+    _m_sValue = trim(_m_sValue);
+    _m_sValue = trim(_m_sValue, '\t');
+
     m_pKey->setText(_m_sKey.c_str());
     m_pValue->setText(_m_sValue.c_str());
 }
@@ -53,7 +59,7 @@ ConfigPair::~ConfigPair() {
     m_vWhitespace.clear();
 }
 
-std::string ConfigPair::trim(const std::string& str, const std::string& whitespace) {
+std::string ConfigPair::trim(const std::string& str, const char& whitespace) {
     const auto strBegin = str.find_first_not_of(whitespace);
     if (strBegin == std::string::npos)
         return ""; // no content
