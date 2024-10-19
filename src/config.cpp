@@ -5,7 +5,7 @@
 #include <QLabel>
 
 ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
-        QWidget* _parent) : QWidget(_parent) {
+        QWidget* _parent) : QWidget(_parent), m_iIndentSize(_indent){
     m_pLayout = std::make_unique<QHBoxLayout>(this);
     m_pKey = std::make_unique<QLineEdit>();
     m_pValue = std::make_unique<QLineEdit>();
@@ -14,13 +14,11 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
 
     if (_m_sValue.compare("{") == 0) {
         m_pValue->setReadOnly(true);
-        m_iIndentSize = _indent - 1;
+        --m_iIndentSize;
     } else if (_m_sKey.compare("}") == 0) {
         m_pKey->setReadOnly(true);
         m_pValue->setReadOnly(true);
-        m_iIndentSize = _indent;
-    } else
-        m_iIndentSize = _indent;
+    }
 
     for (int i = 0; i < m_iIndentSize; ++i) {
         m_vWhitespace.emplace_back(std::make_unique<QWidget>());
@@ -28,8 +26,13 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_pLayout->addWidget(m_vWhitespace.back().get());
     }
 
-    m_pKey->setMaximumWidth(240);
     m_pLayout->addWidget(m_pKey.get());
+
+    // Line is a comment and doesn't need other half
+    if (_m_sKey[0] == '#')
+        return;
+
+    m_pKey->setMaximumWidth(240);
     m_pLayout->addWidget(m_pValue.get());
 }
 std::pair<std::string, std::string> ConfigPair::get() {
@@ -85,13 +88,17 @@ void ConfigWidget::readConfigFile(std::string path) {
     int indentCount = 0;
     bool indentWarned = false;
     for (std::string _line; std::getline(configFile, _line); ) {
-        if (_line.size() == 0 || _line[0] == '#')
+        if (_line.size() == 0)
             continue;
         std::stringstream line(_line);
         std::string _configKey;
         std::string _configValue;
         
-        if (_line.find_first_of('{', 0) != std::string::npos) {
+        if (_line[0] == '#') {
+            // Keep the comments in
+            _configKey = _line;
+            _configValue = "";
+        } else if (_line.find_first_of('{', 0) != std::string::npos) {
             _line.erase(std::remove_if(_line.begin(), _line.end(), isCharRemovable), _line.end());
             _configKey = _line;
             _configValue = '{';
@@ -127,17 +134,25 @@ void ConfigWidget::writeConfigFile(std::string path) {
         std::cerr << "[Config] File path: " << path << std::endl;
         return;
     }
+    int i = 0;
     for (auto configLine : m_vConfigLines) {
+        auto pair = configLine->get();
+        if (pair.first.size() <= 0)
+            continue;
+        if (i > 500)
+            return;
         for (int i = 0; i < configLine->m_iIndentSize; ++i)
             configFile << '\t';
-        auto pair = configLine->get();
-        if (pair.second.compare("{") == 0)
+        if (pair.first[0] == '#')
+            configFile << pair.first;
+        else if (pair.second.compare("{") == 0)
             configFile << pair.first << " " << pair.second;
         else if (pair.first.compare("}") == 0)
             configFile << pair.first;
         else 
             configFile << pair.first << " = " << pair.second;
         configFile << '\n';
+        ++i;
     }
 }
 
