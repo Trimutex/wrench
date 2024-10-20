@@ -162,7 +162,7 @@ void ConfigWidget::writeConfigFile(std::string path) {
     }
 }
 
-bool ConfigWidget::isCharRemovable(char c) {
+bool ConfigWidget::isCharRemovable(const char& c) {
     if (isalpha(c))
         return false;
     return true;

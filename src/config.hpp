@@ -36,7 +36,7 @@ private:
     std::shared_ptr<QWidget>    m_pContainer;
     std::shared_ptr<QVBoxLayout>    m_pLayout;
     std::vector< std::shared_ptr<ConfigPair> > m_vConfigLines;
-    static bool isCharRemovable(char c);
+    static bool isCharRemovable(const char& c);
 };
 
 #endif
