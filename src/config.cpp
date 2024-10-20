@@ -9,6 +9,8 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pLayout = std::make_unique<QHBoxLayout>(this);
     m_pKey = std::make_unique<QLineEdit>();
     m_pValue = std::make_unique<QLineEdit>();
+    m_pValueBool = std::make_unique<QCheckBox>();
+    m_sType = "String";
 
     this->set(_key, _value);
 
@@ -19,6 +21,9 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_pKey->setReadOnly(true);
         m_pValue->setReadOnly(true);
     }
+    
+    if (!_m_sKey.empty() && _m_sKey[0] == '#')
+        m_sType = "Comment";
 
     for (int i = 0; i < m_iIndentSize; ++i) {
         m_vWhitespace.emplace_back(std::make_unique<QWidget>());
@@ -26,14 +31,28 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_pLayout->addWidget(m_vWhitespace.back().get());
     }
 
-    m_pLayout->addWidget(m_pKey.get());
+    for (auto word : ABOOLWORDS) {
+        if (_m_sValue.compare(word) != 0)
+            continue;
+        m_sType = "Boolean";
+        m_pValueBool->setText(_m_sKey.c_str());
+    }
 
-    // Line is a comment and doesn't need other half
-    if (_m_sKey[0] == '#')
-        return;
-
-    m_pKey->setMaximumWidth(240);
-    m_pLayout->addWidget(m_pValue.get());
+    if (m_sType.compare("Comment") == 0)
+        m_pLayout->addWidget(m_pKey.get());
+    else if (m_sType.compare("Boolean") == 0)
+        m_pLayout->addWidget(m_pValueBool.get());
+    else if (m_sType.compare("String") == 0) {
+        m_pLayout->addWidget(m_pKey.get());
+        m_pKey->setMaximumWidth(240);
+        m_pLayout->addWidget(m_pValue.get());
+    } else {
+        std::cerr << "[config] Type declaration missing, could not infer `";
+        std::cerr << m_sType << "`. Going with String\n";
+        m_pLayout->addWidget(m_pKey.get());
+        m_pKey->setMaximumWidth(240);
+        m_pLayout->addWidget(m_pValue.get());
+    }
 }
 std::pair<std::string, std::string> ConfigPair::get() {
     return std::make_pair(m_pKey->text().toStdString(), m_pValue->text().toStdString());
@@ -56,6 +75,7 @@ ConfigPair::~ConfigPair() {
     m_pLayout.reset();
     m_pKey.reset();
     m_pValue.reset();
+    m_pValueBool.reset();
     m_vWhitespace.clear();
 }
 
