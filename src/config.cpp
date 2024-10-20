@@ -10,20 +10,10 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pKey = std::make_unique<QLineEdit>();
     m_pValue = std::make_unique<QLineEdit>();
     m_pValueBool = std::make_unique<QCheckBox>();
+    m_pValueInt = std::make_unique<QSpinBox>();
     m_sType = "String";
 
     this->set(_key, _value);
-
-    if (_m_sValue.compare("{") == 0) {
-        m_pValue->setReadOnly(true);
-        --m_iIndentSize;
-    } else if (_m_sKey.compare("}") == 0) {
-        m_pKey->setReadOnly(true);
-        m_pValue->setReadOnly(true);
-    }
-    
-    if (!_m_sKey.empty() && _m_sKey[0] == '#')
-        m_sType = "Comment";
 
     for (int i = 0; i < m_iIndentSize; ++i) {
         m_vWhitespace.emplace_back(std::make_unique<QWidget>());
@@ -35,20 +25,36 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         if (_m_sValue.compare(word) != 0)
             continue;
         m_sType = "Boolean";
-        m_pValueBool->setText(_m_sKey.c_str());
     }
 
-    if (m_sType.compare("Comment") == 0)
-        m_pLayout->addWidget(m_pKey.get());
-    else if (m_sType.compare("Boolean") == 0)
-        m_pLayout->addWidget(m_pValueBool.get());
-    else if (m_sType.compare("String") == 0) {
+    if (_m_sValue.compare("{") == 0) {
+        m_sType = "CategoryStart";
+        m_pValue->setReadOnly(true);
+        --m_iIndentSize;
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
         m_pLayout->addWidget(m_pValue.get());
+    } else if (_m_sKey.compare("}") == 0) {
+        m_sType = "CategoryEnd";
+        m_pKey->setReadOnly(true);
+        m_pValue->setReadOnly(true);
+        m_pLayout->addWidget(m_pKey.get());
+        m_pKey->setMaximumWidth(240);
+        m_pLayout->addWidget(m_pValue.get());
+    } else if (!_m_sKey.empty() && _m_sKey[0] == '#') {
+        m_sType = "Comment";
+        m_pLayout->addWidget(m_pKey.get());
+    } else if (m_sType.compare("Boolean") == 0) {
+        m_pValueBool->setText(_m_sKey.c_str());
+        m_pLayout->addWidget(m_pValueBool.get());
+    } else if (!_m_sValue.empty() && std::find_if(_m_sValue.begin(), _m_sValue.end(),
+                [](unsigned char c) { return !std::isdigit(c); }) == _m_sValue.end()) {
+        m_sType = "Integer";
+        m_pValueInt->setValue(std::stoi(_m_sValue));
+        m_pLayout->addWidget(m_pKey.get());
+        m_pKey->setMaximumWidth(240);
+        m_pLayout->addWidget(m_pValueInt.get());
     } else {
-        std::cerr << "[config] Type declaration missing, could not infer `";
-        std::cerr << m_sType << "`. Going with String\n";
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
         m_pLayout->addWidget(m_pValue.get());
@@ -76,6 +82,7 @@ ConfigPair::~ConfigPair() {
     m_pKey.reset();
     m_pValue.reset();
     m_pValueBool.reset();
+    m_pValueInt.reset();
     m_vWhitespace.clear();
 }
 

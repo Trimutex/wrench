@@ -6,6 +6,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QScrollArea>
+#include <QSpinBox>
 #include <QLineEdit>
 
 const static std::array<std::string, 4> ABOOLWORDS{"True", "true", "False", "false"};
@@ -23,6 +24,7 @@ private:
     std::unique_ptr<QLineEdit>              m_pKey;
     std::unique_ptr<QLineEdit>              m_pValue;
     std::unique_ptr<QCheckBox>              m_pValueBool;
+    std::unique_ptr<QSpinBox>               m_pValueInt;
     std::unique_ptr<QHBoxLayout>            m_pLayout;
     std::string                             _m_sKey;
     std::string                             _m_sValue;
