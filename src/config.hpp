@@ -9,7 +9,8 @@
 #include <QSpinBox>
 #include <QLineEdit>
 
-const static std::array<std::string, 4> ABOOLWORDS{"True", "true", "False", "false"};
+const static std::array<std::string, 12> ABOOLWORDS{"True", "true", "On", "on",
+    "Yes", "yes", "False", "false", "Off", "off", "No", "no"};
 
 class ConfigPair : public QWidget {
 public:

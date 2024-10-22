@@ -12,6 +12,7 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pValueBool = std::make_unique<QCheckBox>();
     m_pValueInt = std::make_unique<QSpinBox>();
     m_sType = "String";
+    bool activated;
 
     this->set(_key, _value);
 
@@ -24,6 +25,12 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     for (auto word : ABOOLWORDS) {
         if (_m_sValue.compare(word) != 0)
             continue;
+        if (word.compare("True") == 0 || word.compare("true") == 0
+                || word.compare("On") == 0 || word.compare("on") == 0
+                || word.compare("Yes") == 0 || word.compare("yes") == 0)
+            activated = true;
+        else
+            activated = false;
         m_sType = "Boolean";
     }
 
@@ -45,6 +52,7 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_sType = "Comment";
         m_pLayout->addWidget(m_pKey.get());
     } else if (m_sType.compare("Boolean") == 0) {
+        m_pValueBool->setChecked(activated);
         m_pValueBool->setText(_m_sKey.c_str());
         m_pLayout->addWidget(m_pValueBool.get());
     } else if (!_m_sValue.empty() && std::find_if(_m_sValue.begin(), _m_sValue.end(),
@@ -61,7 +69,22 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     }
 }
 std::pair<std::string, std::string> ConfigPair::get() {
-    return std::make_pair(m_pKey->text().toStdString(), m_pValue->text().toStdString());
+    std::string first;
+    std::string second;
+    if (m_sType.compare("Integer") == 0) {
+        first = m_pKey->text().toStdString();
+        second = std::to_string(m_pValueInt->value());
+    } else if (m_sType.compare("Boolean") == 0) {
+        first = m_pValueBool->text().toStdString();
+        if (m_pValueBool->isChecked())
+            second = "true";
+        else
+            second = "false";
+    } else {
+        first = m_pKey->text().toStdString();
+        second = m_pValue->text().toStdString();
+    }
+    return std::make_pair(first, second);
 }
 
 void ConfigPair::set(std::string _key, std::string _value) {
