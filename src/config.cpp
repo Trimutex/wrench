@@ -34,7 +34,10 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_sType = "Boolean";
     }
 
-    if (_m_sValue.compare("{") == 0) {
+    if (_m_sKey.empty()) {
+        m_sType = "Empty";
+        m_pLayout->addWidget(m_pKey.get());
+    } else if (_m_sValue.compare("{") == 0) {
         m_sType = "CategoryStart";
         m_pValue->setReadOnly(true);
         --m_iIndentSize;
@@ -144,13 +147,14 @@ void ConfigWidget::readConfigFile(std::string path) {
     int indentCount = 0;
     bool indentWarned = false;
     for (std::string _line; std::getline(configFile, _line); ) {
-        if (_line.size() == 0)
-            continue;
         std::stringstream line(_line);
         std::string _configKey;
         std::string _configValue;
         
-        if (_line[0] == '#') {
+        if (_line.empty()) {
+            _configKey = "";
+            _configValue = "";
+        } else if (_line[0] == '#') {
             // Keep the comments in
             _configKey = _line;
             _configValue = "";
@@ -190,16 +194,13 @@ void ConfigWidget::writeConfigFile(std::string path) {
         std::cerr << "[Config] File path: " << path << std::endl;
         return;
     }
-    int i = 0;
     for (auto configLine : m_vConfigLines) {
         auto pair = configLine->get();
-        if (pair.first.size() <= 0)
-            continue;
-        if (i > 500)
-            return;
         for (int i = 0; i < configLine->m_iIndentSize; ++i)
             configFile << '\t';
-        if (pair.first[0] == '#')
+        if (pair.first.empty())
+            ;
+        else if (pair.first[0] == '#')
             configFile << pair.first;
         else if (pair.second.compare("{") == 0)
             configFile << pair.first << " " << pair.second;
@@ -208,7 +209,6 @@ void ConfigWidget::writeConfigFile(std::string path) {
         else 
             configFile << pair.first << " = " << pair.second;
         configFile << '\n';
-        ++i;
     }
 }
 
