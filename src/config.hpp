@@ -1,10 +1,16 @@
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 
+#include <memory>
 #include <utility>
 #include <QBoxLayout>
+#include <QCheckBox>
 #include <QScrollArea>
+#include <QSpinBox>
 #include <QLineEdit>
+
+const static std::array<std::string, 12> ABOOLWORDS{"True", "true", "On", "on",
+    "Yes", "yes", "False", "false", "Off", "off", "No", "no"};
 
 class ConfigPair : public QWidget {
 public:
@@ -18,9 +24,12 @@ private:
     std::vector< std::unique_ptr<QWidget> > m_vWhitespace;
     std::unique_ptr<QLineEdit>              m_pKey;
     std::unique_ptr<QLineEdit>              m_pValue;
+    std::unique_ptr<QCheckBox>              m_pValueBool;
+    std::unique_ptr<QSpinBox>               m_pValueInt;
     std::unique_ptr<QHBoxLayout>            m_pLayout;
     std::string                             _m_sKey;
     std::string                             _m_sValue;
+    std::string                             m_sType;
     std::string trim(const std::string& str, const char& whitespace = ' ');
 };
 
@@ -36,7 +45,7 @@ private:
     std::shared_ptr<QWidget>    m_pContainer;
     std::shared_ptr<QVBoxLayout>    m_pLayout;
     std::vector< std::shared_ptr<ConfigPair> > m_vConfigLines;
-    static bool isCharRemovable(char c);
+    static bool isCharRemovable(const char& c);
 };
 
 #endif
