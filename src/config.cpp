@@ -11,7 +11,7 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pValue = std::make_unique<QLineEdit>();
     m_pValueBool = std::make_unique<QCheckBox>();
     m_pValueInt = std::make_unique<QSpinBox>();
-    m_sType = "String";
+    m_eType = INPUT_STRING;
     bool activated = false;
 
     this->set(_key, _value);
@@ -30,36 +30,36 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
                 activated = true;
             break;
         }
-        m_sType = "Boolean";
+        m_eType = INPUT_BOOLEAN;
     }
 
     if (_m_sKey.empty()) {
-        m_sType = "Empty";
+        m_eType = INPUT_BLANK;
         m_pLayout->addWidget(m_pKey.get());
     } else if (_m_sValue.compare("{") == 0) {
-        m_sType = "CategoryStart";
+        m_eType = INPUT_CATEGORY_END;
         m_pValue->setReadOnly(true);
         --m_iIndentSize;
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
         m_pLayout->addWidget(m_pValue.get());
     } else if (_m_sKey.compare("}") == 0) {
-        m_sType = "CategoryEnd";
+        m_eType = INPUT_CATEGORY_END;
         m_pKey->setReadOnly(true);
         m_pValue->setReadOnly(true);
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
         m_pLayout->addWidget(m_pValue.get());
     } else if (!_m_sKey.empty() && _m_sKey[0] == '#') {
-        m_sType = "Comment";
+        m_eType = INPUT_COMMENT;
         m_pLayout->addWidget(m_pKey.get());
-    } else if (m_sType.compare("Boolean") == 0) {
+    } else if (m_eType == INPUT_BOOLEAN) {
         m_pValueBool->setChecked(activated);
         m_pValueBool->setText(_m_sKey.c_str());
         m_pLayout->addWidget(m_pValueBool.get());
     } else if (!_m_sValue.empty() && std::find_if(_m_sValue.begin(), _m_sValue.end(),
                 [](unsigned char c) { return !std::isdigit(c); }) == _m_sValue.end()) {
-        m_sType = "Integer";
+        m_eType = INPUT_INTEGER;
         m_pValueInt->setValue(std::stoi(_m_sValue));
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
@@ -70,13 +70,14 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_pLayout->addWidget(m_pValue.get());
     }
 }
+
 std::pair<std::string, std::string> ConfigPair::get() {
     std::string first;
     std::string second;
-    if (m_sType.compare("Integer") == 0) {
+    if (m_eType == INPUT_INTEGER) {
         first = m_pKey->text().toStdString();
         second = std::to_string(m_pValueInt->value());
-    } else if (m_sType.compare("Boolean") == 0) {
+    } else if (m_eType == INPUT_BOOLEAN) {
         first = m_pValueBool->text().toStdString();
         if (m_pValueBool->isChecked())
             second = "true";

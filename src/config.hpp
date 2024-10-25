@@ -9,12 +9,33 @@
 #include <QSpinBox>
 #include <QLineEdit>
 
+// Const array of known boolean words
 const static std::array<std::string, 12> BOOLWORDS
     {"True", "true", "On", "on", "Yes", "yes",
         "False", "false", "Off", "off", "No", "no"};
 
+// Const array of known truthy words
 const static std::array<std::string, 6> TRUEWORDS
     {"True", "true", "On", "on", "Yes", "yes"};
+
+// Type system for input boxes
+enum eValueType {
+    INPUT_INVALID = -1,
+    INPUT_STRING,
+    INPUT_INTEGER,
+    INPUT_BOOLEAN,
+    INPUT_CATEGORY_START,
+    INPUT_CATEGORY_END,
+    INPUT_COMMENT,
+    INPUT_BLANK
+};
+
+// Sectioning main areas of settings
+// Sub-categories are not currently planned but just use a string variable
+enum eCategory {
+    UNKNOWN = -1,
+    DISPLAY
+};
 
 class ConfigPair : public QWidget {
 public:
@@ -33,7 +54,7 @@ private:
     std::unique_ptr<QHBoxLayout>            m_pLayout;
     std::string                             _m_sKey;
     std::string                             _m_sValue;
-    std::string                             m_sType;
+    eValueType                              m_eType;
     std::string trim(const std::string& str, const char& whitespace = ' ');
 };
 
