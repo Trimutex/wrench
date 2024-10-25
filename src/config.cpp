@@ -8,13 +8,12 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         QWidget* _parent) : QWidget(_parent), m_iIndentSize(_indent){
     m_pLayout = std::make_unique<QHBoxLayout>(this);
     m_pKey = std::make_unique<QLineEdit>();
-    m_pValue = std::make_unique<QLineEdit>();
+    m_eType = INPUT_INVALID;
+    m_pValueStr = std::make_unique<QLineEdit>();
     m_pValueBool = std::make_unique<QCheckBox>();
     m_pValueInt = std::make_unique<QSpinBox>();
-    m_eType = INPUT_STRING;
-    bool activated = false;
 
-    this->set(_key, _value);
+    set(_key, _value);
 
     for (int i = 0; i < m_iIndentSize; ++i) {
         m_vWhitespace.emplace_back(std::make_unique<QWidget>());
@@ -25,69 +24,51 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     for (auto& word : BOOLWORDS) {
         if (_m_sValue.compare(word) != 0)
             continue;
-        for (auto& _true: TRUEWORDS) {
-            if (word.compare(_true) == 0)
-                activated = true;
-            break;
-        }
         m_eType = INPUT_BOOLEAN;
+        checkActivated();
+        break;
     }
 
     if (_m_sKey.empty()) {
         m_eType = INPUT_BLANK;
         m_pLayout->addWidget(m_pKey.get());
     } else if (_m_sValue.compare("{") == 0) {
-        m_eType = INPUT_CATEGORY_END;
-        m_pValue->setReadOnly(true);
+        m_eType = INPUT_CATEGORY_START;
+        m_pValueStr->setReadOnly(true);
         --m_iIndentSize;
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
-        m_pLayout->addWidget(m_pValue.get());
+        m_pLayout->addWidget(m_pValueStr.get());
     } else if (_m_sKey.compare("}") == 0) {
         m_eType = INPUT_CATEGORY_END;
         m_pKey->setReadOnly(true);
-        m_pValue->setReadOnly(true);
+        m_pValueStr->setReadOnly(true);
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
-        m_pLayout->addWidget(m_pValue.get());
+        m_pLayout->addWidget(m_pValueStr.get());
     } else if (!_m_sKey.empty() && _m_sKey[0] == '#') {
         m_eType = INPUT_COMMENT;
         m_pLayout->addWidget(m_pKey.get());
     } else if (m_eType == INPUT_BOOLEAN) {
-        m_pValueBool->setChecked(activated);
-        m_pValueBool->setText(_m_sKey.c_str());
         m_pLayout->addWidget(m_pValueBool.get());
     } else if (!_m_sValue.empty() && std::find_if(_m_sValue.begin(), _m_sValue.end(),
                 [](unsigned char c) { return !std::isdigit(c); }) == _m_sValue.end()) {
         m_eType = INPUT_INTEGER;
-        m_pValueInt->setValue(std::stoi(_m_sValue));
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
         m_pLayout->addWidget(m_pValueInt.get());
     } else {
+        m_eType = INPUT_STRING;
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
-        m_pLayout->addWidget(m_pValue.get());
+        m_pLayout->addWidget(m_pValueStr.get());
     }
+    fromRawString();
 }
 
 std::pair<std::string, std::string> ConfigPair::get() {
-    std::string first;
-    std::string second;
-    if (m_eType == INPUT_INTEGER) {
-        first = m_pKey->text().toStdString();
-        second = std::to_string(m_pValueInt->value());
-    } else if (m_eType == INPUT_BOOLEAN) {
-        first = m_pValueBool->text().toStdString();
-        if (m_pValueBool->isChecked())
-            second = "true";
-        else
-            second = "false";
-    } else {
-        first = m_pKey->text().toStdString();
-        second = m_pValue->text().toStdString();
-    }
-    return std::make_pair(first, second);
+    toRawString();
+    return std::make_pair(_m_sKey, _m_sValue);
 }
 
 void ConfigPair::set(std::string _key, std::string _value) {
@@ -98,15 +79,16 @@ void ConfigPair::set(std::string _key, std::string _value) {
     _m_sValue = _value;
     _m_sValue = trim(_m_sValue);
     _m_sValue = trim(_m_sValue, '\t');
+}
 
-    m_pKey->setText(_m_sKey.c_str());
-    m_pValue->setText(_m_sValue.c_str());
+// Update the type system of the pair
+void ConfigPair::updateType(void) {
 }
 
 ConfigPair::~ConfigPair() {
     m_pLayout.reset();
     m_pKey.reset();
-    m_pValue.reset();
+    m_pValueStr.reset();
     m_pValueBool.reset();
     m_pValueInt.reset();
     m_vWhitespace.clear();
@@ -121,6 +103,83 @@ std::string ConfigPair::trim(const std::string& str, const char& whitespace) {
     const auto strRange = strEnd - strBegin + 1;
 
     return str.substr(strBegin, strRange);
+}
+
+void ConfigPair::fromRawString(void) {
+    switch (m_eType) {
+        case INPUT_STRING:
+        case INPUT_CATEGORY_START:
+        case INPUT_CATEGORY_END:
+        case INPUT_COMMENT:
+        case INPUT_BLANK:
+            m_pKey->setText(_m_sKey.c_str());
+            m_pValueStr->setText(_m_sValue.c_str());
+            break;
+        case INPUT_INTEGER:
+            m_pKey->setText(_m_sKey.c_str());
+            m_pValueInt->setValue(std::stoi(_m_sValue));
+            break;
+        case INPUT_BOOLEAN:
+            m_pValueBool->setText(_m_sKey.c_str());
+            checkActivated();
+            break;
+        default:
+            std::cerr << "[ConfigPair] from raw string defaulted??\n";
+            break;
+    }
+}
+
+void ConfigPair::toRawString(void) {
+    switch (m_eType) {
+        case INPUT_STRING:
+            _m_sKey = m_pKey->text().toStdString();
+            _m_sValue = m_pValueStr->text().toStdString();
+            break;
+        case INPUT_INTEGER:
+            _m_sKey = m_pKey->text().toStdString();
+            _m_sValue = std::to_string(m_pValueInt->value());
+            break;
+        case INPUT_BOOLEAN:
+            _m_sKey = m_pValueBool->text().toStdString();
+            if (m_pValueBool->isChecked())
+                _m_sValue = "true";
+            else
+                _m_sValue = "false";
+            break;
+        case INPUT_CATEGORY_START:
+            _m_sKey = m_pKey->text().toStdString();
+            _m_sValue = m_pValueStr->text().toStdString();
+            break;
+        case INPUT_CATEGORY_END:
+            _m_sKey = m_pKey->text().toStdString();
+            _m_sValue = m_pValueStr->text().toStdString();
+            break;
+        case INPUT_COMMENT:
+            _m_sKey = m_pKey->text().toStdString();
+            _m_sValue = ""; // Hidden but still update
+            break;
+        case INPUT_BLANK:
+            _m_sKey = m_pKey->text().toStdString();
+            _m_sValue = ""; // Hidden but still update
+            break;
+        default:
+            std::cerr << "[ConfigPair] to raw string defaulted??\n";
+            break;
+    }
+}
+
+// Check if the boolean string is truthy
+void ConfigPair::checkActivated(void) {
+    if (m_eType != INPUT_BOOLEAN)
+        return;
+
+    for (auto& _true: TRUEWORDS) {
+        if (_m_sValue.compare(_true) != 0)
+            continue;
+        m_pValueBool->setChecked(true);
+        return;
+    }
+    m_pValueBool->setChecked(false);
 }
 
 ConfigWidget::ConfigWidget(QWidget* _parent) : QScrollArea(_parent) {

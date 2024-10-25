@@ -43,12 +43,13 @@ public:
     ~ConfigPair();
     std::pair<std::string, std::string> get();
     void set(std::string _key, std::string _value);
+    void updateType(void);
     int                                     m_iIndentSize;
 
 private:
     std::vector< std::unique_ptr<QWidget> > m_vWhitespace;
     std::unique_ptr<QLineEdit>              m_pKey;
-    std::unique_ptr<QLineEdit>              m_pValue;
+    std::unique_ptr<QLineEdit>              m_pValueStr;
     std::unique_ptr<QCheckBox>              m_pValueBool;
     std::unique_ptr<QSpinBox>               m_pValueInt;
     std::unique_ptr<QHBoxLayout>            m_pLayout;
@@ -56,6 +57,9 @@ private:
     std::string                             _m_sValue;
     eValueType                              m_eType;
     std::string trim(const std::string& str, const char& whitespace = ' ');
+    void fromRawString(void);
+    void toRawString(void);
+    void checkActivated(void);
 };
 
 // Main widget for handling config editing area
