@@ -12,7 +12,7 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
     m_pValueBool = std::make_unique<QCheckBox>();
     m_pValueInt = std::make_unique<QSpinBox>();
     m_sType = "String";
-    bool activated;
+    bool activated = false;
 
     this->set(_key, _value);
 
@@ -22,15 +22,14 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_pLayout->addWidget(m_vWhitespace.back().get());
     }
 
-    for (auto word : ABOOLWORDS) {
+    for (auto& word : BOOLWORDS) {
         if (_m_sValue.compare(word) != 0)
             continue;
-        if (word.compare("True") == 0 || word.compare("true") == 0
-                || word.compare("On") == 0 || word.compare("on") == 0
-                || word.compare("Yes") == 0 || word.compare("yes") == 0)
-            activated = true;
-        else
-            activated = false;
+        for (auto& _true: TRUEWORDS) {
+            if (word.compare(_true) == 0)
+                activated = true;
+            break;
+        }
         m_sType = "Boolean";
     }
 
