@@ -9,8 +9,33 @@
 #include <QSpinBox>
 #include <QLineEdit>
 
-const static std::array<std::string, 12> ABOOLWORDS{"True", "true", "On", "on",
-    "Yes", "yes", "False", "false", "Off", "off", "No", "no"};
+// Const array of known boolean words
+const static std::array<std::string, 12> BOOLWORDS
+    {"True", "true", "On", "on", "Yes", "yes",
+        "False", "false", "Off", "off", "No", "no"};
+
+// Const array of known truthy words
+const static std::array<std::string, 6> TRUEWORDS
+    {"True", "true", "On", "on", "Yes", "yes"};
+
+// Type system for input boxes
+enum eValueType {
+    INPUT_INVALID = -1,
+    INPUT_STRING,
+    INPUT_INTEGER,
+    INPUT_BOOLEAN,
+    INPUT_CATEGORY_START,
+    INPUT_CATEGORY_END,
+    INPUT_COMMENT,
+    INPUT_BLANK
+};
+
+// Sectioning main areas of settings
+// Sub-categories are not currently planned but just use a string variable
+enum eCategory {
+    UNKNOWN = -1,
+    DISPLAY
+};
 
 class ConfigPair : public QWidget {
 public:
@@ -18,19 +43,23 @@ public:
     ~ConfigPair();
     std::pair<std::string, std::string> get();
     void set(std::string _key, std::string _value);
+    void updateType(void);
     int                                     m_iIndentSize;
 
 private:
     std::vector< std::unique_ptr<QWidget> > m_vWhitespace;
     std::unique_ptr<QLineEdit>              m_pKey;
-    std::unique_ptr<QLineEdit>              m_pValue;
+    std::unique_ptr<QLineEdit>              m_pValueStr;
     std::unique_ptr<QCheckBox>              m_pValueBool;
     std::unique_ptr<QSpinBox>               m_pValueInt;
     std::unique_ptr<QHBoxLayout>            m_pLayout;
     std::string                             _m_sKey;
     std::string                             _m_sValue;
-    std::string                             m_sType;
+    eValueType                              m_eType;
     std::string trim(const std::string& str, const char& whitespace = ' ');
+    void fromRawString(void);
+    void toRawString(void);
+    void checkActivated(void);
 };
 
 // Main widget for handling config editing area
