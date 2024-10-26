@@ -43,16 +43,11 @@ QComboBox {
     color: #6c6f85;
 }
 
-QAbstractItemView {
-    width: 50px;
-    height: 100px;
+/* Hide the down arrow */
+QComboBox::drop-down {
+    border-radius: 12px;
 }
 
 QLabel {
     color: #a5adce; 
-}
-
-/* this hides the arrow?? */
-QComboBox::drop-down {
-    border-radius: 12px;
 }
