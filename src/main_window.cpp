@@ -38,8 +38,10 @@ MainWindow::~MainWindow() {
 void MainWindow::createUI(void) {
     m_pGridLayout->setParent(m_pWindow.get());
     m_pGridLayout->setColumnMinimumWidth(1, 500);
-    m_pDirectoryBox->view()->setMinimumHeight(100);
-    m_pDirectoryBox->view()->setMaximumHeight(200);
+    m_pDirectoryBox->setMaxVisibleItems(10);
+    m_pDirectoryBox->setStyleSheet("combobox-popup: 0;");
+    m_pFileBox->setMaxVisibleItems(10);
+    m_pFileBox->setStyleSheet("combobox-popup: 0;");
     m_pDirectoryBox->insertItem(0, "Select Directory");
     m_pFileBox->insertItem(0, "No Directory Selected");
     m_pSaveButton->setText("Save");
