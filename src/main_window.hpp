@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QListView>
 #include <QMainWindow>
 #include <QPushButton>
 
