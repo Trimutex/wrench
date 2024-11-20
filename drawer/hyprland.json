@@ -2,6 +2,7 @@
     "border_size": {
         "value"         : "general:border_size",
         "description"   : "size of the border around windows",
+        "type"          : "CONFIG_OPTION_INT"",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 1,
@@ -12,216 +13,168 @@
         "value"       : "general:no_border_on_floating",
         "description" : "disable borders for floating windows",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "gaps_in": {
         "value"       : "general:gaps_in",
         "description" : "gaps between windows\n\nsupports css style gaps (top, right, bottom, left -> 5 10 15 20)",
         "type"        : "CONFIG_OPTION_STRING_SHORT",
-        "data"        : "": ::SStringData{"5"},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : 5,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "5"
     },
     "gaps_out": {
         "value"       : "general:gaps_out",
         "description" : "gaps between windows and monitor edges\n\nsupports css style gaps (top, right, bottom, left -> 5 10 15 20)",
         "type"        : "CONFIG_OPTION_STRING_SHORT",
-        "data"        : "": ::SStringData{"20"},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : 20,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "20"
     },
     "gaps_workspaces": {
         "value"       : "general:gaps_workspaces",
         "description" : "gaps between workspaces. Stacks with gaps_out.",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{0, 0, 100},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 0,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 100
     },
     "inactive_border": {
         "value"       : "general:col.inactive_border",
         "description" : "border color for inactive windows",
-        "type"        : "CONFIG_OPTION_GRADIENT,
-        "data"        : "": ::SGradientData{"0xff444444"},
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "category"      : "",
         "sub-category"  : "",
-        "default"       : 0xff444444,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "0xff444444"
     },
     "active_border": {
         "value"       : "general:col.active_border",
         "description" : "border color for the active window",
-        "type"        : "CONFIG_OPTION_GRADIENT,
-        "data"        : "": ::SGradientData{"0xffffffff"},
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "category"      : "",
         "sub-category"  : "",
-        "default"       : 0xffffffff,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "0xffffffff"
     },
     "nogroup_border": {
         "value"       : "general:col.nogroup_border",
         "description" : "inactive border color for window that cannot be added to a group (see denywindowfromgroup dispatcher)",
-        "type"        : "CONFIG_OPTION_GRADIENT,
-        "data"        : "": ::SGradientData{"0xffffaaff"},
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "category"      : "",
         "sub-category"  : "",
-        "default"       : 0xffffaaff,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "0xffffaaff"
     },
     "nogroup_border_active": {
         "value"       : "general:col.nogroup_border_active",
         "description" : "active border color for window that cannot be added to a group",
-        "type"        : "CONFIG_OPTION_GRADIENT,
-        "data"        : "": ::SGradientData{"0xffff00ff"},
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "category"      : "",
         "sub-category"  : "",
-        "default"       : 0xffff00ff,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "0xffff00ff"
     },
     "layout": {
         "value"       : "general:layout",
         "description" : "which layout to use. [dwindle/master]",
         "type"        : "CONFIG_OPTION_STRING_SHORT",
-        "data"        : "": ::SStringData{"dwindle"},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : dwindle,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "dwindle"
     },
     "no_focus_fallback": {
         "value"       : "general:no_focus_fallback",
         "description" : "if true, will not fall back to the next available window when moving focus in a direction where no window was found",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "resize_on_border": {
         "value"       : "general:resize_on_border",
         "description" : "enables resizing windows by clicking and dragging on borders and gaps",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "extend_border_grab_area": {
         "value"       : "general:extend_border_grab_area",
         "description" : "extends the area around the border where you can click and drag on, only used when general:resize_on_border is on.",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{15, 0, 100},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 15,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 100
     },
     "hover_icon_on_border": {
         "value"       : "general:hover_icon_on_border",
         "description" : "show a cursor icon when hovering over borders, only used when general:resize_on_border is on.",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{true},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : true,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : true
     },
     "allow_tearing": {
         "value"       : "general:allow_tearing",
         "description" : "master switch for allowing tearing to occur. See the Tearing page.",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "resize_corner": {
         "value"       : "general:resize_corner",
         "description" : "force floating windows to use a specific corner when being resized (1-4 going clockwise from top left, 0 to disable)",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{0, 0, 4},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 0,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 4
     },
     "snap_enabled": {
         "value"       : "general:snap:enabled",
         "description" : "enable snapping for floating windows",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "snap_window_gap": {
         "value"       : "general:snap:window_gap",
         "description" : "minimum gap in pixels between windows before snapping",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{10, 0, 100},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 10,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 100
     },
     "snap_monitor_gap": {
         "value"       : "general:snap:monitor_gap",
         "description" : "minimum gap in pixels between window and monitor edges before snapping",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{10, 0, 100},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 10,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 100
     },
     "snap_border_overlap": {
         "value"       : "general:snap:border_overlap",
         "description" : "if true, windows snap such that only one border's worth of space is between them",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "rounding": {
         "value"       : "decoration:rounding",
         "description" : "rounded corners' radius (in layout px)",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{0, 0, 20},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 0,
@@ -232,232 +185,194 @@
         "value"       : "decoration:active_opacity",
         "description" : "opacity of active windows. [0.0 - 1.0]",
         "type"        : "CONFIG_OPTION_FLOAT",
-        "data"        : "": ::SFloatData{1, 0, 1},
         "category"      : "",
         "sub-category"  : "",
         "default"       : 1,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 1
     },
     "inactive_opacity": {
         "value"       : "decoration:inactive_opacity",
         "description" : "opacity of inactive windows. [0.0 - 1.0]",
         "type"        : "CONFIG_OPTION_FLOAT",
-        "data"        : "": ::SFloatData{1, 0, 1},
         "category"      : "",
         "sub-category"  : "",
         "default"       : 1,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 1
     },
     "fullscreen_opacity": {
         "value"       : "decoration:fullscreen_opacity",
         "description" : "opacity of fullscreen windows. [0.0 - 1.0]",
         "type"        : "CONFIG_OPTION_FLOAT",
-        "data"        : "": ::SFloatData{1, 0, 1},
         "category"      : "",
         "sub-category"  : "",
         "default"       : 1,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 1
     },
     "shadow_enabled": {
         "value"       : "decoration:shadow:enabled",
         "description" : "enable drop shadows on windows",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{true},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : true,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : true
     },
     "shadow_range": {
         "value"       : "decoration:shadow:range",
         "description" : "Shadow range (size) in layout px",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{4, 0, 100},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 4,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 100
     },
     "shadow_render_power": {
         "value"       : "decoration:shadow:render_power",
         "description" : "in what power to render the falloff (more power, the faster the falloff) [1 - 4]",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{3, 1, 4},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 3,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "minimum"       : 1,
+        "maximum"       : 4
     },
     "shadow_sharp": {
         "value"       : "decoration:shadow:sharp",
         "description" : "whether the shadow should be sharp or not. Akin to an infinitely high render power.",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "shadow_ignore_window": {
         "value"       : "decoration:shadow:ignore_window",
         "description" : "if true, the shadow will not be rendered behind the window itself, only around it.",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{true},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : true,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : true
     },
     "shadow_color": {
         "value"       : "decoration:shadow:color",
         "description" : "shadow's color. Alpha dictates shadow's opacity.",
-        "type"        : "CONFIG_OPTION_COLOR,
-        "data"        : "": ::SColorData{0xee1a1a1a},
+        "type"        : "CONFIG_OPTION_COLOR",
         "category"      : "",
         "sub-category"  : "",
-        "default"       : 0xee1a1a1a,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "0xee1a1a1a"
     },
     "shadow_color_inactive": {
         "value"       : "decoration:shadow:color_inactive",
         "description" : "inactive shadow color. (if not set, will fall back to col.shadow)",
-        "type"        : "CONFIG_OPTION_COLOR,
-        "data"        : "": ::SColorData{},
+        "type"        : "CONFIG_OPTION_COLOR",
         "category"      : "",
         "sub-category"  : "",
-        "default"       : "inherit",
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : "inherit"
     },
     "shadow_offset": {
         "value"       : "decoration:shadow:offset",
         "description" : "shadow's rendering offset.",
-        "type"        : "CONFIG_OPTION_VECTOR,
+        "type"        : "CONFIG_OPTION_VECTOR",
         "data"        : "": ::SVectorData{{}, {-250, -250}, {250, 250}},
         "category"      : "",
         "sub-category"  : "",
         "default"       : [0, 0],
-        "minimum"       : 0,
-        "maximum"       : 20
+        "minimum"       : [-250, -250],
+        "maximum"       : [250, 250]
     },
     "shadow_scale": {
         "value"       : "decoration:shadow:scale",
         "description" : "shadow's scale. [0.0 - 1.0]",
         "type"        : "CONFIG_OPTION_FLOAT",
-        "data"        : "": ::SFloatData{1, 0, 1},
         "category"      : "",
         "sub-category"  : "",
         "default"       : 1,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 1
     },
     "dim_inactive": {
         "value"       : "decoration:dim_inactive",
         "description" : "enables dimming of inactive windows",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{false},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : false,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : false
     },
     "dim_strength": {
         "value"       : "decoration:dim_strength",
         "description" : "how much inactive windows should be dimmed [0.0 - 1.0]",
         "type"        : "CONFIG_OPTION_FLOAT",
-        "data"        : "": ::SFloatData{0.5, 0, 1},
         "category"      : "",
         "sub-category"  : "",
         "default"       : 0.5,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 1
     },
     "dim_special": {
         "value"       : "decoration:dim_special",
         "description" : "how much to dim the rest of the screen by when a special workspace is open. [0.0 - 1.0]",
         "type"        : "CONFIG_OPTION_FLOAT",
-        "data"        : "": ::SFloatData{0.2, 0, 1},
         "category"      : "",
         "sub-category"  : "",
         "default"       : 0.2,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 1
     },
     "dim_around": {
         "value"       : "decoration:dim_around",
         "description" : "how much the dimaround window rule should dim by. [0.0 - 1.0]",
         "type"        : "CONFIG_OPTION_FLOAT",
-        "data"        : "": ::SFloatData{0.4, 0, 1},
         "category"      : "",
         "sub-category"  : "",
         "default"       : 0.4,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 1
     },
     "screen_shader": {
         "value"       : "decoration:screen_shader",
         "description" : "screen_shader a path to a custom shader to be applied at the end of rendering. See examples/screenShader.frag for an example.",
         "type"        : "CONFIG_OPTION_STRING_LONG,
-        "data"        : "": ::SStringData{""},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : "",
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : ""
     },
     "blur_enabled": {
         "value"       : "blur:enabled",
         "description" : "enable kawase window background blur",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{true},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : true,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : true
     },
     "blur_size": {
         "value"       : "blur:size",
         "description" : "blur size (distance)",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{8, 0, 100},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 8,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 100
     },
     "blur_passes": {
         "value"       : "blur:passes",
         "description" : "the amount of passes to perform",
-        "type"        : "CONFIG_OPTION_INT,
-        "data"        : "": ::SRangeData{1, 0, 10},
+        "type"        : "CONFIG_OPTION_INT",
         "category"      : "",
         "sub-category"  : "",
         "default"       : 1,
         "minimum"       : 0,
-        "maximum"       : 20
+        "maximum"       : 10
     },
     "blur_ignore_opacity": {
         "value"       : "blur:ignore_opacity",
         "description" : "make the blur layer ignore the opacity of the window",
         "type"        : "CONFIG_OPTION_BOOL",
-        "data"        : "": ::SBoolData{true},
         "category"      : "",
         "sub-category"  : "",
-        "default"       : true,
-        "minimum"       : 0,
-        "maximum"       : 20
+        "default"       : true
     },
     "blur_new_optimizations": {
         "value"       : "blur:new_optimizations",
@@ -684,7 +599,7 @@
     "input_repeat_rate": {
         "value"       : "input:repeat_rate",
         "description" : "The repeat rate for held-down keys, in repeats per second.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{25, 0, 200},
         "category"      : "",
         "sub-category"  : "",
@@ -695,7 +610,7 @@
     "input_repeat_delay": {
         "value"       : "input:repeat_delay",
         "description" : "Delay before a held-down key is repeated, in milliseconds.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{600, 0, 2000},
         "category"      : "",
         "sub-category"  : "",
@@ -774,7 +689,7 @@
     "input_scroll_button": {
         "value"       : "input:scroll_button",
         "description" : "Sets the scroll button. Has to be an int, cannot be a string. Check wev if you have any doubts regarding the ID. 0 means default.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 300},
         "category"      : "",
         "sub-category"  : "",
@@ -819,7 +734,7 @@
     "input_follow_mouse": {
         "value"       : "input:follow_mouse",
         "description" : "Specify if and how cursor movement should affect window focus. See the note below. [0/1/2/3]",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1, 0, 3},
         "category"      : "",
         "sub-category"  : "",
@@ -854,7 +769,7 @@
         "value"       : "input:float_switch_override_focus",
         "description" : "If enabled (1 or 2), focus will change to the window under the cursor when changing from tiled-to-floating and vice versa. If 2, focus will also follow "
         "mouse on float-to-float switches.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -877,7 +792,7 @@
         "value"       : "input:off_window_axis_events",
         "description" : "Handles axis events around (gaps/border for tiled, dragarea/border for floated) a focused window. 0 ignores axis events 1 sends out-of-bound coordinates 2 "
         "fakes pointer coordinates to the closest point inside the window 3 warps the cursor to the closest point inside the window",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1, 0, 3},
         "category"      : "",
         "sub-category"  : "",
@@ -889,7 +804,7 @@
         "value"       : "input:emulate_discrete_scroll",
         "description" : "Emulates discrete scrolling from high resolution scrolling events. 0 disables it, 1 enables handling of non-standard events only, and 2 force enables all "
         "scroll wheel events to be handled",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -1001,7 +916,7 @@
     "input:touchdevice:transform": {
         "value"       : "input:touchdevice:transform",
         "description" : "Transform the input from touchdevices. The possible transformations are the same as those of the monitors",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 6},
         "category"      : "",
         "sub-category"  : "",
@@ -1034,7 +949,7 @@
     "input:tablet:transform": {
         "value"       : "input:tablet:transform",
         "description" : "transform the input from tablets. The possible transformations are the same as those of the monitors",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 6},
         "category"      : "",
         "sub-category"  : "",
@@ -1056,7 +971,7 @@
     "input:tablet:region_position": {
         "value"       : "input:tablet:region_position",
         "description" : "position of the mapped region in monitor layout relative to the top left corner of the bound monitor or all monitors.",
-        "type"        : "CONFIG_OPTION_VECTOR,
+        "type"        : "CONFIG_OPTION_VECTOR",
         "data"        : "": ::SVectorData{{}, {-20000, -20000}, {20000, 20000}},
         "category"      : "",
         "sub-category"  : "",
@@ -1078,7 +993,7 @@
     "input:tablet:region_size": {
         "value"       : "input:tablet:region_size",
         "description" : "size of the mapped region. When this variable is set, tablet input will be mapped to the region. [0, 0] or invalid size means unset.",
-        "type"        : "CONFIG_OPTION_VECTOR,
+        "type"        : "CONFIG_OPTION_VECTOR",
         "data"        : "": ::SVectorData{{}, {-100, -100}, {4000, 4000}},
         "category"      : "",
         "sub-category"  : "",
@@ -1111,7 +1026,7 @@
     "input:tablet:active_area_size": {
         "value"       : "input:tablet:active_area_size",
         "description" : "size of tablet's active area in mm",
-        "type"        : "CONFIG_OPTION_VECTOR,
+        "type"        : "CONFIG_OPTION_VECTOR",
         "data"        : "": ::SVectorData{{}, {}, {500, 500}},
         "category"      : "",
         "sub-category"  : "",
@@ -1122,7 +1037,7 @@
     "input:tablet:active_area_position": {
         "value"       : "input:tablet:active_area_position",
         "description" : "position of the active area in mm",
-        "type"        : "CONFIG_OPTION_VECTOR,
+        "type"        : "CONFIG_OPTION_VECTOR",
         "data"        : "": ::SVectorData{{}, {}, {500, 500}},
         "category"      : "",
         "sub-category"  : "",
@@ -1144,7 +1059,7 @@
     "gestures:workspace_swipe_fingers": {
         "value"       : "gestures:workspace_swipe_fingers",
         "description" : "how many fingers for the touchpad gesture",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{3, 0, 5},
         "category"      : "",
         "sub-category"  : "",
@@ -1166,7 +1081,7 @@
     "gestures:workspace_swipe_distance": {
         "value"       : "gestures:workspace_swipe_distance",
         "description" : "in px, the distance of the touchpad gesture",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{300, 0, 2000},
         "category"      : "",
         "sub-category"  : "",
@@ -1210,7 +1125,7 @@
     "gestures:workspace_swipe_min_speed_to_force": {
         "value"       : "gestures:workspace_swipe_min_speed_to_force",
         "description" : "minimum speed in px per timepoint to force the change ignoring cancel_ratio. Setting to 0 will disable this mechanic.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{30, 0, 200},
         "category"      : "",
         "sub-category"  : "",
@@ -1254,7 +1169,7 @@
     "gestures:workspace_swipe_direction_lock_threshold": {
         "value"       : "gestures:workspace_swipe_direction_lock_threshold",
         "description" : "in px, the distance to swipe before direction lock activates (touchpad only).",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{10, 0, 200},
         "category"      : "",
         "sub-category"  : "",
@@ -1331,7 +1246,7 @@
     "general:col.border_active": {
         "value"       : "general:col.border_active",
         "description" : "border color for inactive windows",
-        "type"        : "CONFIG_OPTION_GRADIENT,
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "data"        : "": ::SGradientData{"0x66ffff00"},
         "category"      : "",
         "sub-category"  : "",
@@ -1342,7 +1257,7 @@
     "general:col.border_inactive": {
         "value"       : "general:col.border_inactive",
         "description" : "border color for the active window",
-        "type"        : "CONFIG_OPTION_GRADIENT,
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "data"        : "": ::SGradientData{"0x66777700"},
         "category"      : "",
         "sub-category"  : "",
@@ -1353,7 +1268,7 @@
     "general:col.border_locked_active": {
         "value"       : "general:col.border_locked_active",
         "description" : "inactive border color for window that cannot be added to a group (see denywindowfromgroup dispatcher)",
-        "type"        : "CONFIG_OPTION_GRADIENT,
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "data"        : "": ::SGradientData{"0x66ff5500"},
         "category"      : "",
         "sub-category"  : "",
@@ -1364,7 +1279,7 @@
     "general:col.border_locked_inactive": {
         "value"       : "general:col.border_locked_inactive",
         "description" : "active border color for window that cannot be added to a group",
-        "type"        : "CONFIG_OPTION_GRADIENT,
+        "type"        : "CONFIG_OPTION_GRADIENT",
         "data"        : "": ::SGradientData{"0x66775500"},
         "category"      : "",
         "sub-category"  : "",
@@ -1441,7 +1356,7 @@
     "group:groupbar:font_size": {
         "value"       : "group:groupbar:font_size",
         "description" : "font size of groupbar title",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{8, 2, 64},
         "category"      : "",
         "sub-category"  : "",
@@ -1463,7 +1378,7 @@
     "group:groupbar:height": {
         "value"       : "group:groupbar:height",
         "description" : "height of the groupbar",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{14, 1, 64},
         "category"      : "",
         "sub-category"  : "",
@@ -1485,7 +1400,7 @@
     "group:groupbar:priority": {
         "value"       : "group:groupbar:priority",
         "description" : "sets the decoration priority for groupbars",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{3, 0, 6},
         "category"      : "",
         "sub-category"  : "",
@@ -1518,7 +1433,7 @@
     "group:groupbar:text_color": {
         "value"       : "group:groupbar:text_color",
         "description" : "controls the group bar text color",
-        "type"        : "CONFIG_OPTION_COLOR,
+        "type"        : "CONFIG_OPTION_COLOR",
         "data"        : "": ::SColorData{0xffffffff},
         "category"      : "",
         "sub-category"  : "",
@@ -1529,7 +1444,7 @@
     "group:groupbar:col.active": {
         "value"       : "group:groupbar:col.active",
         "description" : "active group border color",
-        "type"        : "CONFIG_OPTION_COLOR,
+        "type"        : "CONFIG_OPTION_COLOR",
         "data"        : "": ::SColorData{0x66ffff00},
         "category"      : "",
         "sub-category"  : "",
@@ -1540,7 +1455,7 @@
     "group:groupbar:col.inactive": {
         "value"       : "group:groupbar:col.inactive",
         "description" : "inactive (out of focus) group border color",
-        "type"        : "CONFIG_OPTION_COLOR,
+        "type"        : "CONFIG_OPTION_COLOR",
         "data"        : "": ::SColorData{0x66777700},
         "category"      : "",
         "sub-category"  : "",
@@ -1551,7 +1466,7 @@
     "group:groupbar:col.locked_active": {
         "value"       : "group:groupbar:col.locked_active",
         "description" : "active locked group border color",
-        "type"        : "CONFIG_OPTION_COLOR,
+        "type"        : "CONFIG_OPTION_COLOR",
         "data"        : "": ::SColorData{0x66ff5500},
         "category"      : "",
         "sub-category"  : "",
@@ -1562,7 +1477,7 @@
     "group:groupbar:col.locked_inactive": {
         "value"       : "group:groupbar:col.locked_inactive",
         "description" : "controls the group bar text color",
-        "type"        : "CONFIG_OPTION_COLOR,
+        "type"        : "CONFIG_OPTION_COLOR",
         "data"        : "": ::SColorData{0x66775500},
         "category"      : "",
         "sub-category"  : "",
@@ -1595,7 +1510,7 @@
     "misc:col.splash": {
         "value"       : "misc:col.splash",
         "description" : "Changes the color of the splash text (requires a monitor reload to take effect).",
-        "type"        : "CONFIG_OPTION_COLOR,
+        "type"        : "CONFIG_OPTION_COLOR",
         "data"        : "": ::SColorData{0xffffffff},
         "category"      : "",
         "sub-category"  : "",
@@ -1628,7 +1543,7 @@
     "misc:force_default_wallpaper": {
         "value"       : "misc:force_default_wallpaper",
         "description" : "Enforce any of the 3 default wallpapers. Setting this to 0 or 1 disables the anime background. -1 means “random”. [-1/0/1/2]",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{-1, -1, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -1650,7 +1565,7 @@
     "misc:vrr": {
         "value"       : "misc:vrr",
         "description" : "	controls the VRR (Adaptive Sync) of your monitors. 0 - off, 1 - on, 2 - fullscreen only [0/1/2]",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -1806,7 +1721,7 @@
     "misc:render_ahead_safezone": {
         "value"       : "misc:render_ahead_safezone",
         "description" : "how many ms of safezone to add to rendering ahead of time. Recommended 1-2.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1, 1, 10},
         "category"      : "",
         "sub-category"  : "",
@@ -1828,7 +1743,7 @@
     "misc:background_color": {
         "value"       : "misc:background_color",
         "description" : "change the background color. (requires enabled disable_hyprland_logo)",
-        "type"        : "CONFIG_OPTION_COLOR,
+        "type"        : "CONFIG_OPTION_COLOR",
         "data"        : "": ::SColorData{0x111111},
         "category"      : "",
         "sub-category"  : "",
@@ -1851,7 +1766,7 @@
         "value"       : "misc:new_window_takes_over_fullscreen",
         "description" : "if there is a fullscreen or maximized window, decide whether a new tiled window opened should replace it, stay behind or disable the fullscreen/maximized "
         "state. 0 - behind, 1 - takes over, 2 - unfullscreen/unmaxize [0/1/2]",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -1873,7 +1788,7 @@
     "misc:initial_workspace_tracking": {
         "value"       : "misc:initial_workspace_tracking",
         "description" : "if enabled, windows will open on the workspace they were invoked on. 0 - disabled, 1 - single-shot, 2 - persistent (all children too)",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -1895,7 +1810,7 @@
     "misc:render_unfocused_fps": {
         "value"       : "misc:render_unfocused_fps",
         "description" : "the maximum limit for renderunfocused windows' fps in the background",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{15, 1, 120},
         "category"      : "",
         "sub-category"  : "",
@@ -1917,7 +1832,7 @@
     "misc:lockdead_screen_delay": {
         "value"       : "misc:lockdead_screen_delay",
         "description" : "the delay in ms after the lockdead screen appears if the lock screen did not appear after a lock event occurred.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1000, 0, 5000},
         "category"      : "",
         "sub-category"  : "",
@@ -1939,7 +1854,7 @@
     "binds:scroll_event_delay": {
         "value"       : "binds:scroll_event_delay",
         "description" : "in ms, how many ms to wait after a scroll event to allow passing another one for the binds.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{300, 0, 2000},
         "category"      : "",
         "sub-category"  : "",
@@ -1973,7 +1888,7 @@
     "binds:workspace_center_on": {
         "value"       : "binds:workspace_center_on",
         "description" : "Whether switching workspaces should center the cursor on the workspace (0) or on the last active window for that workspace (1)",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 1},
         "category"      : "",
         "sub-category"  : "",
@@ -1985,7 +1900,7 @@
         "value"       : "binds:focus_preferred_method",
         "description" : "sets the preferred focus finding method when using focuswindow/movewindow/etc with a direction. 0 - history (recent have priority), 1 - length (longer "
             "shared edges have priority)",
-            "type"        : "CONFIG_OPTION_INT,
+            "type"        : "CONFIG_OPTION_INT",
             "data"        : "": ::SRangeData{0, 0, 1},
             "category"      : "",
             "sub-category"  : "",
@@ -2085,7 +2000,7 @@
         "value"       : "opengl:force_introspection",
         "description" : "forces introspection at all times. Introspection is aimed at reducing GPU usage in certain cases, but might cause graphical glitches on nvidia. 0 - "
         "nothing, 1 - force always on, 2 - force always on if nvidia",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{2, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -2096,7 +2011,7 @@
     "render:explicit_sync": {
         "value"       : "render:explicit_sync",
         "description" : "Whether to enable explicit sync support. Requires a hyprland restart. 0 - no, 1 - yes, 2 - auto based on the gpu driver",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{2, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -2107,7 +2022,7 @@
     "render:explicit_sync_kms": {
         "value"       : "render:explicit_sync_kms",
         "description" : "Whether to enable explicit sync support for the KMS layer. Requires explicit_sync to be enabled. 0 - no, 1 - yes, 2 - auto based on the gpu driver",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{2, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -2164,7 +2079,7 @@
     "cursor:min_refresh_rate": {
         "value"       : "cursor:min_refresh_rate",
         "description" : "minimum refresh rate for cursor movement when no_break_fs_vrr is active. Set to minimum supported refresh rate or higher",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{24, 10, 500},
         "category"      : "",
         "sub-category"  : "",
@@ -2175,7 +2090,7 @@
     "cursor:hotspot_padding": {
         "value"       : "cursor:hotspot_padding",
         "description" : "the padding, in logical px, between screen edges and the cursor",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{1, 0, 20},
         "category"      : "",
         "sub-category"  : "",
@@ -2186,7 +2101,7 @@
     "cursor:inactive_timeout": {
         "value"       : "cursor:inactive_timeout",
         "description" : "in seconds, after how many seconds of cursor’s inactivity to hide it. Set to 0 for never.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 20},
         "category"      : "",
         "sub-category"  : "",
@@ -2351,7 +2266,7 @@
     "debug:damage_tracking": {
         "value"       : "debug:damage_tracking",
         "description" : "redraw only the needed bits of the display. Do not change. (default: full - 2) monitor - 1, none - 0",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{2, 0, 2},
         "category"      : "",
         "sub-category"  : "",
@@ -2373,7 +2288,7 @@
     "debug:manual_crash": {
         "value"       : "debug:manual_crash",
         "description" : "set to 1 and then back to 0 to crash Hyprland.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 1},
         "category"      : "",
         "sub-category"  : "",
@@ -2395,7 +2310,7 @@
     "debug:watchdog_timeout": {
         "value"       : "debug:watchdog_timeout",
         "description" : "sets the timeout in seconds for watchdog to abort processing of a signal of the main thread. Set to 0 to disable.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{5, 0, 20},
         "category"      : "",
         "sub-category"  : "",
@@ -2417,7 +2332,7 @@
     "debug:error_limit": {
         "value"       : "debug:error_limit",
         "description" : "limits the number of displayed config file parsing errors.",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{5, 0, 20},
         "category"      : "",
         "sub-category"  : "",
@@ -2428,7 +2343,7 @@
     "debug:error_position": {
         "value"       : "debug:error_position",
         "description" : "sets the position of the error bar. top - 0, bottom - 1",
-        "type"        : "CONFIG_OPTION_INT,
+        "type"        : "CONFIG_OPTION_INT",
         "data"        : "": ::SRangeData{0, 0, 1},
         "category"      : "",
         "sub-category"  : "",
