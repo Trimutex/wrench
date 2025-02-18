@@ -1,6 +1,5 @@
 #include "main_window.hpp"
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <QFile>
 #include <QPainter>
@@ -67,7 +66,7 @@ void MainWindow::connectUI(void) {
 }
 
 // Save current file
-void MainWindow::saveSignal(void) {
+void MainWindow::save(void) {
     std::string selectedFile = m_pFileBox->currentText().toStdString();
     if (selectedFile.compare("<none>") == 0 || selectedFile.compare("No Directory Selected") == 0) {
         std::cerr << "[save] Save button clicked, but no file being edited" << std::endl;
@@ -88,7 +87,7 @@ void MainWindow::saveSignal(void) {
 }
 
 // Exit the program
-void MainWindow::exitSignal(void) {
+void MainWindow::exitProgram(void) {
     exit(0);
 }
 
@@ -146,9 +145,9 @@ void MainWindow::readConfigFile(void) {
 }
 
 void MainWindow::saveButtonClicked(void) {
-    emit saveSignal();
+    save();
 }
 
 void MainWindow::exitButtonClicked(void) {
-    emit exitSignal();
+    exitProgram();
 }

@@ -15,9 +15,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-signals:
-    void saveSignal(void);
-    void exitSignal(void);
 public slots:
     void saveButtonClicked(void);
     void exitButtonClicked(void);
@@ -27,6 +24,8 @@ private:
     void populateDirectory(void);
     void populateFiles(void);
     void readConfigFile(void);
+    void save(void);
+    void exitProgram(void);
 
     // Window itself
     std::shared_ptr<QWidget>        m_pWindow;

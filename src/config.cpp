@@ -4,16 +4,20 @@
 #include <string>
 #include <QLabel>
 
-ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
-        QWidget* _parent) : QWidget(_parent), m_iIndentSize(_indent){
+ConfigPair::ConfigPair(ConfigPairDetails& details, QWidget* _parent)
+    : QWidget(_parent) {
+    m_iIndentSize = details.indent;
     m_pLayout = std::make_unique<QHBoxLayout>(this);
     m_pKey = std::make_unique<QLineEdit>();
     m_eType = INPUT_INVALID;
+    m_position = details.position;
     m_pValueStr = std::make_unique<QLineEdit>();
     m_pValueBool = std::make_unique<QCheckBox>();
     m_pValueInt = std::make_unique<QSpinBox>();
+    m_add = std::make_unique<QPushButton>();
+    m_remove = std::make_unique<QPushButton>();
 
-    set(_key, _value);
+    set(details.key, details.value);
 
     for (int i = 0; i < m_iIndentSize; ++i) {
         m_vWhitespace.emplace_back(std::make_unique<QWidget>());
@@ -63,6 +67,10 @@ ConfigPair::ConfigPair(std::string _key, std::string _value, int _indent,
         m_pKey->setMaximumWidth(240);
         m_pLayout->addWidget(m_pValueStr.get());
     }
+    m_pLayout->addWidget(m_add.get());
+    m_pLayout->addWidget(m_remove.get());
+    QObject::connect(m_add.get(), &QAbstractButton::clicked, this, &ConfigPair::addButtonClicked);
+    QObject::connect(m_remove.get(), &QAbstractButton::clicked, this, &ConfigPair::removeButtonClicked);
     fromRawString();
 }
 
@@ -182,6 +190,19 @@ void ConfigPair::checkActivated(void) {
     m_pValueBool->setChecked(false);
 }
 
+void ConfigPair::addButtonClicked(void) {
+    ;
+}
+
+void ConfigPair::removeButtonClicked(void) {
+}
+
+void ConfigWidget::addPair(int position) {
+}
+
+void ConfigWidget::removePair(int position) {
+}
+
 ConfigWidget::ConfigWidget(QWidget* _parent) : QScrollArea(_parent) {
     setWidgetResizable(true);
     m_pContainer = std::make_shared<QWidget>(this);
@@ -207,28 +228,27 @@ void ConfigWidget::readConfigFile(std::string path) {
     bool indentWarned = false;
     for (std::string _line; std::getline(configFile, _line); ) {
         std::stringstream line(_line);
-        std::string _configKey;
-        std::string _configValue;
+        ConfigPairDetails details;
         
         if (_line.empty()) {
-            _configKey = "";
-            _configValue = "";
+            details.key = "";
+            details.value = "";
         } else if (_line[0] == '#') {
             // Keep the comments in
-            _configKey = _line;
-            _configValue = "";
+            details.key = _line;
+            details.value = "";
         } else if (_line.find_first_of('{', 0) != std::string::npos) {
             _line.erase(std::remove_if(_line.begin(), _line.end(), isCharRemovable), _line.end());
-            _configKey = _line;
-            _configValue = '{';
+            details.key = _line;
+            details.value = '{';
             ++indentCount;
         } else if (_line.find_first_of('}', 0) != std::string::npos) {
-            _configKey = '}';
-            _configValue = ' ';
+            details.key = '}';
+            details.value = ' ';
             --indentCount;
         } else {
-            std::getline(line, _configKey, '=');
-            std::getline(line, _configValue);
+            std::getline(line, details.key, '=');
+            std::getline(line, details.value);
         }
 
         std::shared_ptr<ConfigPair> newPair;
@@ -237,10 +257,11 @@ void ConfigWidget::readConfigFile(std::string path) {
                 std::cerr << "[config] Indentation mistake found! Problems may arise here" << std::endl;
                 indentWarned = true;
             }
-            newPair = std::make_shared<ConfigPair>(_configKey, _configValue, 0, m_pContainer.get());
+            details.indent = 0;
         } else
-            newPair = std::make_shared<ConfigPair>(_configKey, _configValue, indentCount, m_pContainer.get());
+            details.indent = indentCount;
 
+        newPair = std::make_shared<ConfigPair>(details, m_pContainer.get());
         m_vConfigLines.push_back(newPair);
         m_pLayout->addWidget(newPair.get());
     }
