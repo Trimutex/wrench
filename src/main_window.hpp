@@ -24,7 +24,6 @@ public slots:
 private:
     void createUI(void);
     void connectUI(void);
-    void readQss(void);
     void populateDirectory(void);
     void populateFiles(void);
     void readConfigFile(void);

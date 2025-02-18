@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget* _parent) : QMainWindow(_parent) {
     createUI();
     connectUI();
     populateDirectory();
-    readQss();
     m_pWindow->show();
 }
 
@@ -65,18 +64,6 @@ void MainWindow::connectUI(void) {
     QObject::connect(m_pExitButton.get(), &QAbstractButton::clicked, this, &MainWindow::exitButtonClicked);
     QObject::connect(m_pDirectoryBox.get(), &QComboBox::activated, this, &MainWindow::populateFiles);
     QObject::connect(m_pFileBox.get(), &QComboBox::activated, this, &MainWindow::readConfigFile);
-}
-
-// Read qss file in for styling
-void MainWindow::readQss(void) {
-    QFile styleFile("src/qss/main_window.qss");
-    styleFile.open(QFile::ReadOnly);
-    if (!styleFile.isOpen()) {
-        std::cerr << "[qss] Unable to open file for qss, does it even exist?" << std::endl;
-        return;
-    }
-    m_pWindow->setStyleSheet(QString::fromLatin1(styleFile.readAll()));
-    styleFile.close();
 }
 
 // Save current file
