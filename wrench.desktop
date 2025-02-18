@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Terminal=false
+Name=Wrench
+GenericName=Wrench
+Comment=Linux Configuration App
+Exec=wrench
