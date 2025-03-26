@@ -5,6 +5,7 @@
 #include <utility>
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QPushButton>
 #include <QScrollArea>
 #include <QSpinBox>
 #include <QLineEdit>
@@ -37,13 +38,22 @@ enum eCategory {
     DISPLAY
 };
 
+struct ConfigPairDetails {
+    std::string key         = "";
+    std::string value       = "";
+    int         indent      = 0;
+    int         position    = 0;
+};
+
 class ConfigPair : public QWidget {
+Q_OBJECT
 public:
-    explicit ConfigPair(std::string _key, std::string _value, int _indent, QWidget* _parent = nullptr);
+    explicit ConfigPair(ConfigPairDetails& details, QWidget* _parent = nullptr);
     ~ConfigPair();
     std::pair<std::string, std::string> get();
     void set(std::string _key, std::string _value);
     void updateType(void);
+    void updatePosition(const int _position);
     int                                     m_iIndentSize;
 
 private:
@@ -53,23 +63,39 @@ private:
     std::unique_ptr<QCheckBox>              m_pValueBool;
     std::unique_ptr<QSpinBox>               m_pValueInt;
     std::unique_ptr<QHBoxLayout>            m_pLayout;
+    std::unique_ptr<QPushButton>            m_add;
+    std::unique_ptr<QPushButton>            m_remove;
     std::string                             _m_sKey;
     std::string                             _m_sValue;
     eValueType                              m_eType;
+    int                                     m_position;
     std::string trim(const std::string& str, const char& whitespace = ' ');
     void fromRawString(void);
     void toRawString(void);
     void checkActivated(void);
+public slots:
+    void addButtonClicked();
+    void removeButtonClicked();
+// TODO: Get this working
+// These signals aren't able to link to ConfigWidget slots, why????
+// Q_OBJECT macro breaks things more
+signals:
+    void addPositionNotify(int position);
+    void removePositionNotify(int position);
 };
 
 // Main widget for handling config editing area
 // TODO: infer data type and possibly adjust input type? e.g. bool dropdown
 class ConfigWidget : public QScrollArea {
+Q_OBJECT
 public:
     explicit ConfigWidget(QWidget* parent = nullptr);
     ~ConfigWidget();
     void readConfigFile(std::string path);
     void writeConfigFile(std::string path);
+public slots:
+    void addPair(int position);
+    void removePair(int position);
 private:
     std::shared_ptr<QWidget>    m_pContainer;
     std::shared_ptr<QVBoxLayout>    m_pLayout;
