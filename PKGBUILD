@@ -19,10 +19,7 @@ conflicts=(wrench)
 source=(
   "git+https://github.com/Trimutex/wrench.git"
 )
-b2sums=(
-  'SKIP'
-  'SKIP'
-)
+b2sums=('SKIP')
 
 prepare() {
   cd wrench
