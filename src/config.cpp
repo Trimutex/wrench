@@ -15,7 +15,9 @@ ConfigPair::ConfigPair(ConfigPairDetails& details, QWidget* _parent)
     m_pValueBool = std::make_unique<QCheckBox>();
     m_pValueInt = std::make_unique<QSpinBox>();
     m_add = std::make_unique<QPushButton>();
+    m_add->setText("+");
     m_remove = std::make_unique<QPushButton>();
+    m_remove->setText("-");
 
     set(details.key, details.value);
 
@@ -91,6 +93,10 @@ void ConfigPair::set(std::string _key, std::string _value) {
 
 // Update the type system of the pair
 void ConfigPair::updateType(void) {
+}
+
+void ConfigPair::updatePosition(const int _position) {
+    m_position = _position;
 }
 
 ConfigPair::~ConfigPair() {
@@ -191,16 +197,36 @@ void ConfigPair::checkActivated(void) {
 }
 
 void ConfigPair::addButtonClicked(void) {
-    ;
+    emit addPositionNotify(m_position);
 }
 
 void ConfigPair::removeButtonClicked(void) {
+    emit removePositionNotify(m_position);
 }
 
 void ConfigWidget::addPair(int position) {
+    std::cout << "[TEST] Adding pair at position: " << position << std::endl;
+    ConfigPairDetails details;
+    std::shared_ptr<ConfigPair> newPair;
+    details.position = position;
+    newPair = std::make_shared<ConfigPair>(details, m_pContainer.get());
+
+    connect(newPair.get(), &ConfigPair::addPositionNotify, this, &ConfigWidget::addPair);
+    connect(newPair.get(), &ConfigPair::removePositionNotify, this, &ConfigWidget::removePair);
+
+    m_vConfigLines.insert(m_vConfigLines.begin() + position, newPair);
+    m_pLayout->insertWidget(position, newPair.get());
+
+    for (int i = position; position < m_vConfigLines.size(); ++position)
+        m_vConfigLines.at(position)->updatePosition(position);
 }
 
 void ConfigWidget::removePair(int position) {
+    std::cout << "[TEST] Removing pair at position: " << position << std::endl;
+    m_pLayout->takeAt(position);
+    m_vConfigLines.erase(m_vConfigLines.begin() + position);
+    for (int i = position; position < m_vConfigLines.size(); ++position)
+        m_vConfigLines.at(position)->updatePosition(position);
 }
 
 ConfigWidget::ConfigWidget(QWidget* _parent) : QScrollArea(_parent) {
@@ -225,10 +251,12 @@ void ConfigWidget::readConfigFile(std::string path) {
     }
     m_vConfigLines.clear();
     int indentCount = 0;
+    int position = 0;
     bool indentWarned = false;
     for (std::string _line; std::getline(configFile, _line); ) {
         std::stringstream line(_line);
         ConfigPairDetails details;
+        details.position = position;
         
         if (_line.empty()) {
             details.key = "";
@@ -262,8 +290,11 @@ void ConfigWidget::readConfigFile(std::string path) {
             details.indent = indentCount;
 
         newPair = std::make_shared<ConfigPair>(details, m_pContainer.get());
+        connect(newPair.get(), &ConfigPair::addPositionNotify, this, &ConfigWidget::addPair);
+        connect(newPair.get(), &ConfigPair::removePositionNotify, this, &ConfigWidget::removePair);
         m_vConfigLines.push_back(newPair);
         m_pLayout->addWidget(newPair.get());
+        ++position;
     }
 }
 

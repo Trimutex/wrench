@@ -46,12 +46,14 @@ struct ConfigPairDetails {
 };
 
 class ConfigPair : public QWidget {
+Q_OBJECT
 public:
     explicit ConfigPair(ConfigPairDetails& details, QWidget* _parent = nullptr);
     ~ConfigPair();
     std::pair<std::string, std::string> get();
     void set(std::string _key, std::string _value);
     void updateType(void);
+    void updatePosition(const int _position);
     int                                     m_iIndentSize;
 
 private:
@@ -85,6 +87,7 @@ signals:
 // Main widget for handling config editing area
 // TODO: infer data type and possibly adjust input type? e.g. bool dropdown
 class ConfigWidget : public QScrollArea {
+Q_OBJECT
 public:
     explicit ConfigWidget(QWidget* parent = nullptr);
     ~ConfigWidget();
