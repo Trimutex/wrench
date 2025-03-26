@@ -41,6 +41,10 @@ ConfigPair::ConfigPair(ConfigPairDetails& details, QWidget* _parent)
     } else if (_m_sValue.compare("{") == 0) {
         m_eType = INPUT_CATEGORY_START;
         m_pValueStr->setReadOnly(true);
+        m_pLayout->takeAt(m_iIndentSize);
+        // TODO: hacked method to fix indentation.
+        //      come up with something better later...
+        m_vWhitespace.pop_back();
         --m_iIndentSize;
         m_pLayout->addWidget(m_pKey.get());
         m_pKey->setMaximumWidth(240);
