@@ -16,3 +16,17 @@ file(GLOB_RECURSE SRCFILES "src/*.cpp")
 add_executable(wrench ${SRCFILES})
 
 target_link_libraries(wrench PRIVATE Qt6::Widgets)
+
+string(JOIN "\n" WRENCH_DESKTOP
+    "[Desktop Entry]"
+    "Type=Application"
+    "Terminal=false"
+    "Name=Wrench"
+    "GenericName=Wrench"
+    "Comment=Linux Configuration App"
+    "Exec=wrench"
+)
+file(GENERATE OUTPUT wrench.desktop CONTENT "${WRENCH_DESKTOP}")
+
+install(TARGETS wrench)
+install(FILES "${CMAKE_BINARY_DIR}/wrench.desktop" DESTINATION share/applications)
