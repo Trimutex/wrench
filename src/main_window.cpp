@@ -84,6 +84,7 @@ void MainWindow::save(void) {
     }
     m_pConfig->writeConfigFile(selectedFile);
     std::cout << "[save] file save completed" << std::endl;
+    readConfigFile(); // Update the syntax on entries
 }
 
 // Exit the program
