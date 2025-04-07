@@ -315,7 +315,7 @@ void ConfigWidget::writeConfigFile(std::string path) {
             configFile << '\t';
         if (pair.first.empty())
             ;
-        else if (pair.first[0] == '#')
+        else if (pair.first[0] == '#' || pair.second.empty())
             configFile << pair.first;
         else if (pair.second.compare("{") == 0)
             configFile << pair.first << " " << pair.second;
