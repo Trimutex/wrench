@@ -4,6 +4,18 @@
 #include <string>
 #include <QLabel>
 
+std::string trim(const std::string& str, const char& whitespace) {
+    const std::string::size_type strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const std::string::size_type strEnd = str.find_last_not_of(whitespace);
+    const std::string::size_type strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
+
 ConfigPair::ConfigPair(ConfigPairDetails& details, QWidget* _parent)
     : QWidget(_parent) {
     m_iIndentSize = details.indent;
@@ -110,17 +122,6 @@ ConfigPair::~ConfigPair() {
     m_pValueBool.reset();
     m_pValueInt.reset();
     m_vWhitespace.clear();
-}
-
-std::string ConfigPair::trim(const std::string& str, const char& whitespace) {
-    const auto strBegin = str.find_first_not_of(whitespace);
-    if (strBegin == std::string::npos)
-        return ""; // no content
-
-    const auto strEnd = str.find_last_not_of(whitespace);
-    const auto strRange = strEnd - strBegin + 1;
-
-    return str.substr(strBegin, strRange);
 }
 
 void ConfigPair::fromRawString(void) {
@@ -270,8 +271,7 @@ void ConfigWidget::readConfigFile(std::string path) {
             details.key = _line;
             details.value = "";
         } else if (_line.find_first_of('{', 0) != std::string::npos) {
-            _line.erase(std::remove_if(_line.begin(), _line.end(), isCharRemovable), _line.end());
-            details.key = _line;
+            details.key = trim(_line, '{');
             details.value = '{';
             ++indentCount;
         } else if (_line.find_first_of('}', 0) != std::string::npos) {
