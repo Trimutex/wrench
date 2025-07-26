@@ -15,7 +15,6 @@ std::string trim(const std::string& str, const char& whitespace) {
     return str.substr(strBegin, strRange);
 }
 
-
 ConfigPair::ConfigPair(ConfigPairDetails& details, QWidget* _parent)
     : QWidget(_parent) {
     m_iIndentSize = details.indent;
@@ -262,6 +261,8 @@ void ConfigWidget::readConfigFile(std::string path) {
         std::stringstream line(_line);
         ConfigPairDetails details;
         details.position = position;
+        _line = trim(_line);
+        _line = trim(_line, '\t');
         
         if (_line.empty()) {
             details.key = "";
