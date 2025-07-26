@@ -45,6 +45,8 @@ struct ConfigPairDetails {
     int         position    = 0;
 };
 
+std::string trim(const std::string& str, const char& whitespace = ' ');
+
 class ConfigPair : public QWidget {
 Q_OBJECT
 public:
@@ -69,7 +71,6 @@ private:
     std::string                             _m_sValue;
     eValueType                              m_eType;
     int                                     m_position;
-    std::string trim(const std::string& str, const char& whitespace = ' ');
     void fromRawString(void);
     void toRawString(void);
     void checkActivated(void);
